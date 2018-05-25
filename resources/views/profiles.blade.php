@@ -11,6 +11,7 @@
         </button>
         <a class="btn  btn-primary btn-sm"   href="{{ route('associates.get') }}">He belong to</a>
         <a class="btn  btn-primary btn-sm"   href="{{ route('associate.of') }}">I Belong To</a>
+        <br>
     </form>
     @if (count($users))
         <table class="table table-striped" >

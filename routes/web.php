@@ -39,7 +39,7 @@ Route::patch('/{user}/demote', 'UserController@demoteUser')->name('users.demote'
 
 //US.9
 Route::get('/me/password', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-Route::post('/me/password', 'Auth\ResetPasswordController@reset')->name('password.store');
+Route::patch('/me/password', 'Auth\ResetPasswordController@reset')->name('password.store');
 
 
 //US.10

@@ -5,6 +5,15 @@
 @section('content')
 
 <div class="container">
+    <form action="{{action('UserController@index')}}" method="get">
+        <input type="text" placeholder="Filter By Name.." name="name">
+        <input type="text" placeholder="Filter By Type.." name="type">
+        <input type="text" placeholder="Filter By Status.." name="status">
+        <button type="submit" class="btn btn-sm btn-success">
+            <i class="glyphicon glyphicon-search"></i>
+        </button>
+        <br>
+    </form>
     @if (count($users))
         <table class="table table-striped" style="background: #cce5ff">
             <thead>
