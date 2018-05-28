@@ -28,7 +28,8 @@ class UpdateMovementRequest extends FormRequest
             'date' => 'required',
             'value' => 'required',
             'type' => 'required',
-            'end_balance' => 'required'
+            'end_balance' => 'required',
+            'description' => 'required'
         ];
     }
 }
