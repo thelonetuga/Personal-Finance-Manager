@@ -1,14 +1,12 @@
 @extends('layouts.navBar')
 
-@section('title', 'List accounts')
+@section('title', 'List Movements')
 
 @section('content')
     <div class="container">
+        <a class="btn btn-xs btn-success" href="{{route('movement.create', $account)}}">Add new movement</a>
+            <br>
 @if (count($movements))
-
-            <a class="btn btn-xs btn-success">Add new movement</a>
-        <br>
-
     <table class="table table-striped" style="background: #cce5ff">
     <thead>
         <tr>
@@ -21,6 +19,7 @@
     </thead>
     <tbody>
     @foreach ($movements as $movement)
+
         <tr>
             <td>{{ $movement->typeToStr() }}</td>
             <td>{{ $movement->date }}</td>
