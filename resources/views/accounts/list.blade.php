@@ -37,11 +37,11 @@
                         {{method_field('delete')}}
                         {{csrf_field()}}
                         <a class="btn btn-xs btn-primary" href="{{route('account.edit', $account->id)}}">Edit</a>
-                        <a class="btn btn-xs btn-primary" href="{{route('movements.account', $account->id)}}">Movements</a>
-                        <a class="btn btn-xs btn-danger" href="{{route('account.delete', $account->id)}}">Delete</a>
+                        <a class="btn btn-xs btn-success" href="{{route('movements.account', $account->id)}}">Movements</a>
                         @if($account->deleted_at)
-                            <a class="btn btn-xs btn-danger" href="{{route('account.account.reopen', $account->id)}}">Reopen Account</a>
+                            <a class="btn btn-xs btn-warning" href="{{route('account.account.reopen', $account->id)}}">Reopen</a>
                         @endif
+                        <a class="btn btn-xs btn-danger" href="{{route('account.delete', $account->id)}}">Delete</a>
                     </form>
             </td>
         </tr>
@@ -51,5 +51,4 @@
     <h2>No accounts found</h2>
 @endif
     </div>
-
 @endsection('content')
