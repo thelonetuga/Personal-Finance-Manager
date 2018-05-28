@@ -3,9 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Response;
 
-class IsAdmin
+class IsBlocked
 {
     /**
      * Handle an incoming request.
@@ -14,13 +13,12 @@ class IsAdmin
      * @param  \Closure  $next
      * @return mixed
      */
-   public function handle($request, Closure $next)
+    public function handle($request, Closure $next)
     {
-        if ($request->user() && $request->user()->admin == 1) {
+        if($request->user() && $request->user()->blocked == 0) {
              return $next($request);
         }
 
-       return Response::make(view('home'),403);
-
+       return Response::make(view('me.profile'),403);
     }
 }

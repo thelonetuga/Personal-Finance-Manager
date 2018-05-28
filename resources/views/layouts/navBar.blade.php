@@ -24,6 +24,7 @@
                     @if((Auth::user()->admin) === 1)
                         <li><a href="{{ route('users.list') }}"> List of Users </a></li>
                     @endif
+                    <li><a href="{{route('about')}}">About</a></li>
                     <li><a href="{{route('profiles')}}">Profile of Users</a></li>
                     <li><a href="{{route('profile')}}">My Profile</a></li>
                 @endauth

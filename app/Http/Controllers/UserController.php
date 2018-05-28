@@ -219,7 +219,7 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request)
+    public function update($request)
     {
 
         $user = User::findOrFail($request->input('user_id'));

@@ -28,9 +28,8 @@ class AccountsController extends Controller
      */
     public function accountsUser()
     {
-      // $accounts = Account::where('owner_id', '=', Auth::id() )->get();
-        $accounts = Account::where('owner_id', '=', auth()->user()->id )->get();
         $user_id = Account::where('owner_id', '=', auth()->user()->id)->value('owner_id');
+        $accounts = Account::withTrashed()->where('owner_id', '=', auth()->user()->id )->get();
         $pagetitle = "List of Accounts";
         return view('accounts.list', compact('accounts','user_id', 'pagetitle'));
     }
@@ -85,7 +84,7 @@ class AccountsController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAccountRequest $request, $id)
+    public function update(UpdateAccountRequest $request, $account_id)
     {
         if ($request->has('cancel')) {
             return redirect()->action('AccountsController@accountsUser');
@@ -94,7 +93,7 @@ class AccountsController extends Controller
         $accountModel  = $request->validate([
         ], [ // Custom Messages
         ]);
-        $account = Account::findOrFail($id);
+        $account = Account::findOrFail($account_id);
         $account->fill($accountModel);
         $account->save();
 
@@ -113,11 +112,31 @@ class AccountsController extends Controller
     public function accountDelete($id)
     {
         $account = Account::findOrFail($id);
-        $account->delete();
+        $account->trashed();
 
         return redirect()
             ->view('accounts.users')
             ->with('success', 'Account deleted successfully');
+    }
+
+    public function deletedAt(){
+        $accounts = Account::onlyTrashed()
+            ->where('owner_id', '=', auth()->user()->id )->get();
+
+        $pagetitle = "List of Accounts";
+        return view('accounts.list', compact('accounts', 'pagetitle'));
+    }
+
+    public function opened(){
+        $accounts = Account::where('owner_id', '=', auth()->user()->id )->get();
+        $pagetitle = "List of Accounts";
+        return view('accounts.list', compact('accounts', 'pagetitle'));
+    }
+
+    public function accountReopen(){
+        Account::withTrashed()->where('owner_id', '=', auth()->user()->id )->restore();
+        $accounts = Account::where('owner_id', '=', auth()->user()->id )->get();
+        return view('accounts.list', compact('accounts', 'pagetitle'));
     }
 
 

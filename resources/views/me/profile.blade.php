@@ -48,9 +48,9 @@
 </div>
 <div class="flex-center ">
     <div class="content">
-        <a class="btn  btn-primary btn-lg"   href="{{ route('accounts.users',Auth::id()) }}">List Accounts</a>
-        <a class="btn  btn-primary btn-lg"   href="{{ route('accounts.users',Auth::id()) }}">List Opened Accounts </a>
-        <a class="btn  btn-primary btn-lg"   href="{{ route('accounts.users',Auth::id()) }}">List Closed Accounts </a>
+        <a class="btn  btn-primary btn-lg"   href="{{ route('accounts.users',auth()->user()->id) }}">List Accounts</a>
+        <a class="btn  btn-primary btn-lg"   href="{{ route('users.accounts.opened',auth()->user()->id) }}">List Opened Accounts </a>
+        <a class="btn  btn-primary btn-lg"   href="{{ route('users.accounts.closed',auth()->user()->id) }}">List Closed Accounts </a>
     </div>
 </div>
 </body>

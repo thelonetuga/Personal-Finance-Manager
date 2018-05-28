@@ -12,7 +12,6 @@
 */
 
 Route::get('/', 'StatisticsController@index')->name('welcome.index');
-
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -41,7 +40,6 @@ Route::patch('/{user}/demote', 'UserController@demoteUser')->name('users.demote'
 Route::get('/me/password', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::patch('/me/password', 'Auth\ResetPasswordController@reset')->name('password.store');
 
-
 //US.10
 Route::get('/me/profile', 'UserController@profile')->name('profile');
 
@@ -56,8 +54,8 @@ Route::get('/me/associate_of', 'AssociatesController@associatesOf')->name('assoc
 
 //US.14
 Route::get('/accounts/{user}', 'AccountsController@accountsUser')->name('accounts.users');
-Route::get('/accounts/{user}/opened', 'AccountsController@accountsUserOpened')->name('users.accounts.opened')->middleware('can:sameUser,user');
-Route::get('/accounts/{user}/closed', 'AccountsController@accountsUserClosed')->name('users.accounts.closed')->middleware('can:sameUser,user');
+Route::get('/accounts/{user}/opened', 'AccountsController@opened')->name('users.accounts.opened');
+Route::get('/accounts/{user}/closed', 'AccountsController@deletedAt')->name('users.accounts.closed');
 
 //US.15
 Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete');
@@ -67,12 +65,12 @@ Route::patch('/account/{account}/close', 'AccountsController@accountClose')->nam
 Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('account.account.reopen');
 
 //US.17
-Route::get('/account/create', 'AccountsController@create')->name('account.create');
-Route::post('/account/create', 'AccountsController@store')->name('account.store');
+Route::get('/account', 'AccountsController@create')->name('account.create');
+Route::post('/account', 'AccountsController@store')->name('account.store');
 
 //US.18
-Route::get('/accounts/{account}/edit', 'AccountsController@edit')->name('account.edit');
-Route::put('/accounts/{account}/edit', 'AccountsController@update')->name('accounts.update');
+Route::get('/accounts/{account}', 'AccountsController@edit')->name('account.edit');
+Route::put('/accounts/{account}', 'AccountsController@update')->name('accounts.update');
 
 //US.20 
 Route::get('/movements/{account}', 'MovementsController@movementsAccount')->name('movements.account');
@@ -101,7 +99,5 @@ Route::post('/me/associates', 'AssociatesController@associatesPost')->name('asso
 
 //US.30
 Route::delete('/me/associates/{user}', 'AssociatesController@associatesUserDelete')->name('associates.user.delete');
-
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
