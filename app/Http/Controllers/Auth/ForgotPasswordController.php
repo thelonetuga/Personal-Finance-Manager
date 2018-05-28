@@ -29,4 +29,9 @@ class ForgotPasswordController extends Controller
     {
         $this->middleware('guest');
     }
+    public function passwordReset($token)
+    {
+        $users = User::all();
+        return view('auth.passwords.resetByEmail', compact('users', 'token'));
+    }
 }

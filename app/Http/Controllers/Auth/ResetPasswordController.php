@@ -57,4 +57,5 @@ class ResetPasswordController extends Controller
             ->with('success', 'User password update successfully');
 
     }
+
 }

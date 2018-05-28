@@ -35,7 +35,7 @@
 
             <div class="col-md-6">
                 <input id="phone" type="text" class="form-control" name="phone"
-                       value="{{ old( 'phone', $user->phone) }}"  min="9">
+                       value="{{ old( 'phone', $user->phone) }}" >
 
                 @if ($errors->has('phone'))
                     <span class="help-block">

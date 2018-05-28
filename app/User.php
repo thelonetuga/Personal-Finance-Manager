@@ -39,7 +39,7 @@ class User extends Authenticatable
         }
     }
     
-    public function isBlock()
+    public function isBlocked()
     {
         if ($this->blocked) {
             return 'true';

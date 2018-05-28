@@ -228,6 +228,7 @@ class UserController extends Controller
             'name' => 'required|string|regex:/^[\pL\s]+$/u',
             'email' => 'required|email|max:255|unique:users',
             'phone' => 'numeric|regex:/^[0-9]{9}$/', //(\+351)
+            'profile_photo' =>'mimes:jpg,jpeg,png',
         ]);
 
         $user->name = $request->input('name');

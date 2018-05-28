@@ -51,7 +51,7 @@
                         <td>
                             <div class="form-group">
                                 @if ($user->blocked)
-                                    <form method="post" action="{{route('users.block', $user->id)}}">
+                                    <form method="post" action="{{route('users.blocked', $user->id)}}">
                                         {{ csrf_field() }}
                                         {{ method_field('PATCH') }}
                                         <button type="submit" class="btn btn-xs btn-success">Unblock</button>
