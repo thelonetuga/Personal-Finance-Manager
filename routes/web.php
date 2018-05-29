@@ -44,7 +44,6 @@ Route::get('/me/profile', 'UserController@edit')->name('profile.edit');
 Route::put('/me/profile', 'UserController@update')->name('profile.update');
 //US.11
 Route::get('/profiles', 'UserController@profiles')->name('profiles');
-//Route::get('/profiles', 'UserController@filter')->name('filter');
 //US.12
 Route::get('/me/associates', 'AssociatesController@associatesGet')->name('associates.get');
 
@@ -61,7 +60,7 @@ Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('a
 Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close')->middleware('owner');
 
 //US.16
-Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('canOpen');
+Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('owner');
 
 //US.17
 Route::get('/account', 'AccountsController@create')->name('account.create');

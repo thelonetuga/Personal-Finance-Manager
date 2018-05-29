@@ -208,8 +208,11 @@ class UserController extends Controller
      */
     public function edit()
     {
-        $user = User::findOrFail(auth()->user()->id);
-        return view('users.edit', compact('user','pagetitle'));
+        $user = Auth::user();
+        return view('profile.edit', [
+            "user" => $user,
+
+        ]);
     }
 
     /**
@@ -222,34 +225,29 @@ class UserController extends Controller
     public function update()
     {
         $request = request();
-        $user = User::findOrFail($request->input('user_id'));
-
-        $this->validate($request, [
-            'name' => 'required|string|regex:/^[\pL\s]+$/u',
-            'email' => 'required|email|max:255|unique:users',
-            'phone' => 'numeric|regex:/^[0-9]{9}$/', //(\+351)
-            'profile_photo' =>'mimes:jpg,jpeg,png',
+        $user = Auth::user();
+        $dados = $request->validate([
+            'name' => 'required|string|max:255|regex:/^[\pL\s]+$/u',
+            'phone' => 'nullable|regex:/^[0-9 +\s]+$/',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'profile_photo' => 'nullable|image',
         ]);
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->phone = $request->input('phone');
+        $user->name = $dados['name'];
+        $user->email = $dados['email'];
+        $user->phone = $dados['phone'] ?? null;
+        $file = $dados['profile_photo'] ?? null;
 
+        if ($file != null) {
 
-        if($request->hasFile('profile_photo')){
+            $file_name = basename($file->store('profiles', 'public'));
 
-            $avatar = $request->file('profile_photo');
-            $filename = str_random(32) . '.' . $avatar->getClientOriginalExtension();
-            Image::make($avatar)->resize(300,300)->save(storage_path('app/public/profiles/'.$filename));
-
-            $user->profile_photo = $filename;
+            $user->update(['profile_photo' => $file_name]);
         }
 
         $user->save();
+        return redirect()->route('dashboard', auth()->user()->id)->with('success', 'Profile has been Edited');
 
-        return redirect()
-            ->route('dashboard', auth()->user()->id)
-            ->with('success', 'User saved successfully');
     }
 
     /**

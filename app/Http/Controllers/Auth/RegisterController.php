@@ -66,18 +66,18 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        if(array_key_exists('profile_photo', $data)) {
-            $avatar = $data['profile_photo'];
-            $filename = str_random(32) . '.' . $avatar->getClientOriginalExtension();
-            Image::make($avatar)->resize(300,300)->save(storage_path('app/public/profiles/'.$filename));
+        if(request()->hasfile('profile_photo') && request()->file('profile_photo')->isValid()){
+            $filepath = request()->file('profile_photo')->store('profiles', 'public');
+            $filename = basename($filepath);
+        } else {
+            $filename = null;
         }
-
 
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'phone' => $data['phone'],
+            'phone' => $data['phone'] ?? null,
             'profile_photo' => $filename ?? null,
         ]);
     }
