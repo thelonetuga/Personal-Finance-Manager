@@ -248,7 +248,7 @@ class UserController extends Controller
         $user->save();
 
         return redirect()
-            ->route('dashboard')
+            ->route('dashboard', auth()->user()->id)
             ->with('success', 'User saved successfully');
     }
 

@@ -136,6 +136,12 @@ class AccountsController extends Controller
                 ->with('success', 'Account saved successfully');
     }
 
+    public function accountReopen($id){
+        $account = Account::findOrFail($id);
+        $account->restore();
+        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
+    }
+
     public function closed(){
         $accounts = Account::onlyTrashed()->where('owner_id', '=', auth()->user()->id )->get();
         $pagetitle = "List of Accounts";
@@ -148,10 +154,4 @@ class AccountsController extends Controller
         return view('accounts.list', compact('accounts', 'pagetitle'));
     }
 
-    public function accountReopen($id){
-       $account = Account::withTrashed()->find($id);
-       $account->deleted_at = null;
-       $account->restore();
-       return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
-    }
 }

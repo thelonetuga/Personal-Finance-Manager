@@ -17,13 +17,10 @@ class CanOpen
      */
     public function handle($request, Closure $next)
     {
-             if (Account::findorfail($request->route('account'))){
-                 if(auth()->user()->id == Account::where('id', $request->route('account'))->owner_id) {
+     $account = Account::findorfail($request->route('account'));
+                 if(auth()->user()->id == $account->owner_id) {
                      return $next($request);
                  }
-                 return Response::make(view('home'),403);
-             }
-
              return Response::make(view('home'),404);
 
     }
