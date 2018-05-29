@@ -1,7 +1,13 @@
 {{--@dump($errors)--}}
 <div class="form-group">
     <label for="inputAccountType">Account Type</label>
-    <input type="text" class="form-control" name="type" id="inputAccountType" placeholder="Type" value="{{ old('type', $account->account_type_id) }}"/>
+    <select name="type" class="form-control"  id="inputAccountType" placeholder="Type" value="{{ old('type', $account->account_type_id) }}">
+        <option value= 1 >Bank Account</option>
+        <option value= 2 >Pocket Money</option>
+        <option value= 3 >Paypal Account</option>
+        <option value= 4 >Credit Card</option>
+        <option value= 5 >Meal Card</option>
+    </select>
     @if ($errors->has('type'))
         <em>{{ $errors->first('type') }}</em>
     @endif

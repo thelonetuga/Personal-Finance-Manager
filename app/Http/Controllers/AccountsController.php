@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Account;
+use Illuminate\Support\Facades\Hash;
+
 //$aux = \App\User::id();
 
 class AccountsController extends Controller
@@ -19,7 +21,6 @@ class AccountsController extends Controller
     {
         return view('/me/profile');
     }
-    
 
     /**
      * Display a listing of the resource.
@@ -60,9 +61,7 @@ class AccountsController extends Controller
 
         $account->save();
 
-        return redirect()
-            ->route('accounts.users')
-            ->with('success', 'Account added successfully');
+        return view('welcome', compact( 'pagetitle'));
     }
 
     /**
@@ -105,21 +104,29 @@ class AccountsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param Account $id
      * @return \Illuminate\Http\Response
      */
 
-    public function accountDelete($id)
+    public function accountCLose(Account $id)
     {
-        $account = Account::findOrFail($id);
-        $account->trashed();
+        Account::findOrFail($id)->delete();
 
         return redirect()
-            ->view('accounts.users')
-            ->with('success', 'Account deleted successfully');
+            ->route('accounts.users', auth()->user()->id)
+            ->with('success', 'Account Close successfully');
     }
 
-    public function deletedAt(){
+    public function accountDelete($id){
+        $account = Account::findOrFail($id);
+        $account->forceDelete();
+
+        return redirect()
+            ->route('accounts.users', auth()->user()->id)
+            ->with('success', 'Account saved successfully');
+    }
+
+    public function closed(){
         $accounts = Account::onlyTrashed()
             ->where('owner_id', '=', auth()->user()->id )->get();
 
@@ -133,11 +140,8 @@ class AccountsController extends Controller
         return view('accounts.list', compact('accounts', 'pagetitle'));
     }
 
-    public function accountReopen(){
-        Account::withTrashed()->where('owner_id', '=', auth()->user()->id )->restore();
-        $accounts = Account::where('owner_id', '=', auth()->user()->id )->get();
-        return view('accounts.list', compact('accounts', 'pagetitle'));
+    public function accountReopen($id){
+        Account::where('id', $id)->restore();
+        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
     }
-
-
 }
