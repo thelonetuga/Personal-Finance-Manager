@@ -11,6 +11,7 @@ class Account extends Model
 {
     use Notifiable;
     use SoftDeletes;
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

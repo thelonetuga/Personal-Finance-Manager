@@ -55,14 +55,14 @@ Route::get('/me/associate_of', 'AssociatesController@associatesOf')->name('assoc
 //US.14
 Route::get('/accounts/{user}', 'AccountsController@accountsUser')->name('accounts.users');
 Route::get('/accounts/{user}/opened', 'AccountsController@opened')->name('users.accounts.opened');
-Route::get('/accounts/{user}/closed', 'AccountsController@deletedAt')->name('users.accounts.closed');
+Route::get('/accounts/{user}/closed', 'AccountsController@closed')->name('users.accounts.closed');
 
 //US.15
 Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete');
 Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close');
 
 //US.16
-Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('account.account.reopen');
+Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen');
 
 //US.17
 Route::get('/account', 'AccountsController@create')->name('account.create');
