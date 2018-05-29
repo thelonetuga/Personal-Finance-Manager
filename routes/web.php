@@ -59,11 +59,11 @@ Route::get('/accounts/{user}/opened', 'AccountsController@opened')->name('users.
 Route::get('/accounts/{user}/closed', 'AccountsController@closed')->name('users.accounts.closed')->middleware('associateOf');
 
 //US.15
-Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete')->middleware('auth','owner');
+Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete')->middleware('owner');
 Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close')->middleware('owner');
 
 //US.16
-Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('owner');
+Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('canOpen');
 
 //US.17
 Route::get('/account', 'AccountsController@create')->name('account.create');

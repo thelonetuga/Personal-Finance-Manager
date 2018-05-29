@@ -51,8 +51,12 @@ class Account extends Model
         return 'Unknown';
     }
 
-    public function User(){
-        $this->belongsTo('App\User', 'owner_id');
+    public function user(){
+      return  $this->belongsTo('App\User', 'owner_id');
+    }
+
+    public function movements(){
+        return $this->hasMany('App\Movement');
     }
 }
 

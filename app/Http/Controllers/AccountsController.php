@@ -122,25 +122,22 @@ class AccountsController extends Controller
     {
         $account = Account::findOrFail($id);
         $account->deleted_at == Carbon::now();
-        $account ->delete();
-
-        return redirect()
-            ->route('accounts.users', auth()->user()->id)
-            ->with('success', 'Account Close successfully');
+            $account->delete();
+            return redirect()
+                ->route('accounts.users', auth()->user()->id)
+                ->with('success', 'Account Close successfully');
     }
 
     public function accountDelete($id){
         $account = Account::findOrFail($id);
-        $account->forceDelete();
-
-        return redirect()
-            ->route('accounts.users', auth()->user()->id)
-            ->with('success', 'Account saved successfully');
+            $account->forceDelete();
+            return redirect()
+                ->route('accounts.users', auth()->user()->id)
+                ->with('success', 'Account saved successfully');
     }
 
     public function closed(){
         $accounts = Account::onlyTrashed()->where('owner_id', '=', auth()->user()->id )->get();
-
         $pagetitle = "List of Accounts";
         return view('accounts.list', compact('accounts', 'pagetitle'));
     }
@@ -152,7 +149,7 @@ class AccountsController extends Controller
     }
 
     public function accountReopen($id){
-       $account = Account::where('id', $id);
+       $account = Account::withTrashed()->find($id);
        $account->deleted_at = null;
        $account->restore();
        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');

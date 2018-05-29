@@ -30,7 +30,7 @@ class AccountPolicy
      */
     public function create(User $user)
     {
-        //
+
     }
 
     /**
@@ -52,8 +52,14 @@ class AccountPolicy
      * @param  \App\Account  $account
      * @return mixed
      */
-    public function delete(User $user, Account $account)
+    public function delete(User $user, $account)
     {
-        //
+        return $user->id == Account::findOrFail($account)->user->id;
+    }
+
+    public function noMovements($acc)
+    {
+        $account = Account::findOrFail($acc);
+        return ;
     }
 }

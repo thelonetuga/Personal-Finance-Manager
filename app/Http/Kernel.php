@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'blocked' => \App\Http\Middleware\IsBlocked::class,
         'associateOf' => \App\Http\Middleware\AssociateOf::class,
         'owner' => \App\Http\Middleware\IsOwner::class,
+        'canOpen' => \App\Http\Middleware\CanOpen::class,
     ];
 }

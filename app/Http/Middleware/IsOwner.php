@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Account;
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class IsOwner
 {
@@ -19,9 +20,9 @@ class IsOwner
     {
         $account = Account::findorfail($request->route('account'));
         if(auth()->user()->id == $account->owner_id) {
+            if (count($account->movements()->get()) == 0 && $account->last_movement_date == null)
             return $next($request);
         }
-
-        return Response::make(view('me.profile'),403);
+        return Response::make(view('home'),403);
     }
 }
