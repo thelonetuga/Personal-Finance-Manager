@@ -3,7 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Rules\ConfirmPassword;
+use App\User;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 class ResetPasswordController extends Controller
 {
@@ -37,21 +43,20 @@ class ResetPasswordController extends Controller
         $this->middleware('auth');
     }
 
-    public function reset(UpdateUserRequest $request){
-        $user = User::findOrFail($request->input('user_id'));
+    public function reset(Request $request){
+
 
         $this->validate($request,[
-            'old_password' => 'required',
-            'password' => 'required|min:6|same:password_confirmation',
+            'old_password' => ['required', new ConfirmPassword],
+            'password' => 'required|min:3|confirmed|different:old_password',
+            'password_confirmation'=> 'required|same:password',
         ]);
 
-        $current_password = Auth::User()->password;
+        $user=User::findOrFail(Auth::user()->id);
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
 
-        if(($request['old_password'] != $current_password))
-        {
-            $user->password = $request->input(bcrypt('password'));
-            $user->save();
-        }
+
         return redirect()
             ->route('profile')
             ->with('success', 'User password update successfully');

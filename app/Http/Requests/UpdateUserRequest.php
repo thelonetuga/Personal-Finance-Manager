@@ -26,7 +26,8 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required|string|regex:/^[\pL\s]+$/u',
             'email' => 'required|email|max:255|unique:users',
-            'phone' => 'numeric'
+            'phone' => 'nullable|regex:/^[0-9]{9}$/',
+            'profile_photo' =>'nullable|image',
         ];
     }
 }

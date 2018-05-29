@@ -225,12 +225,15 @@ class UserController extends Controller
     public function update()
     {
         $request = request();
-        $user = Auth::user();
-        $dados = $request->validate([
-            'name' => 'required|string|max:255|regex:/^[\pL\s]+$/u',
-            'phone' => 'nullable|regex:/^[0-9 +\s]+$/',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'profile_photo' => 'nullable|image',
+        $user = User::findOrFail($request->input('user_id'));
+
+        $this->validate($request, [
+            'name' => 'required|string|regex:/^[\pL\s]+$/u',
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'phone' => 'nullable|regex:/^[0-9 +\s]+$/', //(\+351)
+            'profile_photo' =>'nullable|image',
+        ],[ // Custom Messages
+        'name.regex' => 'Name must only contain letters and spaces.',
         ]);
 
         $user->name = $dados['name'];
@@ -243,6 +246,9 @@ class UserController extends Controller
             $file_name = basename($file->store('profiles', 'public'));
 
             $user->update(['profile_photo' => $file_name]);
+        }
+        else{
+            $user->profile_photo = null;
         }
 
         $user->save();
