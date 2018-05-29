@@ -54,16 +54,16 @@ Route::get('/me/associates', 'AssociatesController@associatesGet')->name('associ
 Route::get('/me/associate-of', 'AssociatesController@associatesOf')->name('associate.of');
 
 //US.14
-Route::get('/accounts/{user}', 'AccountsController@accountsUser')->name('accounts.users');
-Route::get('/accounts/{user}/opened', 'AccountsController@opened')->name('users.accounts.opened');
-Route::get('/accounts/{user}/closed', 'AccountsController@closed')->name('users.accounts.closed');
+Route::get('/accounts/{user}', 'AccountsController@accountsUser')->name('accounts.users')->middleware('associateOf');
+Route::get('/accounts/{user}/opened', 'AccountsController@opened')->name('users.accounts.opened')->middleware('associateOf');
+Route::get('/accounts/{user}/closed', 'AccountsController@closed')->name('users.accounts.closed')->middleware('associateOf');
 
 //US.15
-Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete');
-Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close');
+Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete')->middleware('auth','owner');
+Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close')->middleware('owner');
 
 //US.16
-Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen');
+Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('owner');
 
 //US.17
 Route::get('/account', 'AccountsController@create')->name('account.create');

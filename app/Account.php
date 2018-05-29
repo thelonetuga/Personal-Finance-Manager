@@ -51,6 +51,9 @@ class Account extends Model
         return 'Unknown';
     }
 
+    public function User(){
+        $this->belongsTo('App\User', 'owner_id');
+    }
 }
 
 
