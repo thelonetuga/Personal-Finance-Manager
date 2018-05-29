@@ -209,10 +209,7 @@ class UserController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        return view('profile.edit', [
-            "user" => $user,
-
-        ]);
+        return view('users.edit',compact('user'));
     }
 
     /**
@@ -225,30 +222,24 @@ class UserController extends Controller
     public function update()
     {
         $request = request();
-        $user = User::findOrFail($request->input('user_id'));
-
-        $this->validate($request, [
-            'name' => 'required|string|regex:/^[\pL\s]+$/u',
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
-            'phone' => 'nullable|regex:/^[0-9 +\s]+$/', //(\+351)
-            'profile_photo' =>'nullable|image',
-        ],[ // Custom Messages
-        'name.regex' => 'Name must only contain letters and spaces.',
+        $user = Auth::user();
+        $data = $request->validate([
+            'name' => 'required|string|max:255|regex:/^[\pL\s]+$/u',
+            'phone' => 'nullable|regex:/^[0-9 +\s]+$/',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'profile_photo' => 'nullable|image',
         ]);
 
-        $user->name = $dados['name'];
-        $user->email = $dados['email'];
-        $user->phone = $dados['phone'] ?? null;
-        $file = $dados['profile_photo'] ?? null;
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->phone = $data['phone'] ?? null;
+        $file = $data['profile_photo'] ?? null;
 
         if ($file != null) {
 
             $file_name = basename($file->store('profiles', 'public'));
 
             $user->update(['profile_photo' => $file_name]);
-        }
-        else{
-            $user->profile_photo = null;
         }
 
         $user->save();
