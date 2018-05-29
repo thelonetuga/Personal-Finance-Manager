@@ -57,11 +57,15 @@ class AccountsController extends Controller
     {
         $account = new Account;
         $account->fill($request->all());
+        $account->owner_id = auth()->user()->id;
+        $account->account_type_id = $request->input('type');
         $account->code = Hash::make($request->code);
 
         $account->save();
 
-        return view('welcome', compact( 'pagetitle'));
+        return redirect()
+            ->route('accounts.users', auth()->user()->id)
+            ->with('success', 'Account saved successfully');
     }
 
     /**
@@ -108,7 +112,7 @@ class AccountsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function accountCLose(Account $id)
+    public function accountCLose( $id)
     {
         Account::findOrFail($id)->delete();
 

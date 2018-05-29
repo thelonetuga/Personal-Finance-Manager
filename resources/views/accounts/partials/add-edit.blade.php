@@ -1,7 +1,7 @@
 {{--@dump($errors)--}}
 <div class="form-group">
-    <label for="inputAccountType">Account Type</label>
-    <select name="type" class="form-control"  id="inputAccountType" placeholder="Type" value="{{ old('type', $account->account_type_id) }}">
+    <label for="account_type_id">Account Type</label>
+    <select name="type" class="form-control"  id="account_type_id" placeholder="Type" value="{{ old('type', $account->account_type_id) }}">
         <option value= 1 >Bank Account</option>
         <option value= 2 >Pocket Money</option>
         <option value= 3 >Paypal Account</option>
