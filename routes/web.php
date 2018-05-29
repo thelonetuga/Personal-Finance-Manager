@@ -11,12 +11,13 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', 'StatisticsController@index')->name('welcome.index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/users', 'UserController@index')->name('users.index');
 Route::get('/welcome', 'StatisticsController@index')->name('welcome.index');
 Route::get('/users/create', 'UserController@create')->name('users.create');
 Route::post('/users/create', 'UserController@store')->name('users.store');
@@ -28,13 +29,13 @@ Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 //US.5
-Route::get('/users/list', 'UserController@index')->name('users.list');
+Route::get('/users', 'UserController@index')->name('users.list');
 
 //US.7
-Route::patch('/users/{user}/block', 'UserController@blockUser')->name('users.block');
-Route::patch('/users/{user}/unblock', 'UserController@unBlockUser')->name('users.unblock');
-Route::patch('/users/{user}/promote', 'UserController@promoteUser')->name('users.promote');
-Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.demote');
+Route::patch('/users/{user}/block', 'UserController@blockUser')->name('users.blocked')->middleware('auth','admin','blocked');
+Route::patch('/users/{user}/unblock', 'UserController@unBlockUser')->name('users.unblock')->middleware('auth','admin','blocked');
+Route::patch('/users/{user}/promote', 'UserController@promoteUser')->name('users.promote')->middleware('auth','admin','blocked');
+Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.demote')->middleware('auth','admin','blocked');
 
 //US.9
 Route::get('/me/password', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
