@@ -24,12 +24,14 @@ class UpdateMovementRequest extends FormRequest
     public function rules()
     {
         return [
-            'movement_category_id' => 'required',
+            /*'
+            movement_category_id' => 'required',
             'date' => 'required',
             'value' => 'required',
             'type' => 'required',
             'end_balance' => 'required',
             'description' => 'required'
+            */
         ];
     }
 }

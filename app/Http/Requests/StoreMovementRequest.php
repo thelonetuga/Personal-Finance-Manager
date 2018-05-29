@@ -24,11 +24,13 @@ class StoreMovementRequest extends FormRequest
     public function rules()
     {
         return [
-            'movement_category_id' => 'required',
-            'date' => 'required',
-            'value' => 'required',
-            'type' => 'required',
-            'end_balance' => 'required'
+            /*
+            //'movement_category_id' => 'required|integer|between:1,18',
+            'date' => 'date_format:"Y/m/d"|required',
+            'value' => 'required|numeric|between:-9999.99,9999.99',
+            //'type' => 'required|exists:expense,revenue',
+            'description' => 'sometimes|required'
+            */
         ];
     }
 }

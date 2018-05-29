@@ -64,4 +64,5 @@ class User extends Authenticatable
             $this->blocked = 1;
         }
     }
+
 }

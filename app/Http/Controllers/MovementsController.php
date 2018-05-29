@@ -29,8 +29,7 @@ class MovementsController extends Controller
      */
     public function movementsAccount()
     {
-        $account = Account::where('owner_id', '=', auth()->user()->id )->value('id');
-
+            $account = Account::where('owner_id', '=', auth()->user()->id )->value('id');
             $movements = Movement::where('account_id', '=', Auth::id() )->get();
             $pagetitle = "List of Movements";
             return view('movements.list', compact('movements', 'account', 'pagetitle'));
@@ -38,17 +37,36 @@ class MovementsController extends Controller
 
     public function movementCreate()
     {
+        $account = Account::where('owner_id', '=', auth()->user()->id )->value('id');
         $movement = new Movement();
         $pagetitle = "Create Movement";
-        return view('movements.add', compact('movement','pagetitle'));
+        return view('movements.add', compact('movement', 'account', 'pagetitle'));
+    }
+
+    public function edit($id)
+    {
+        $account = Account::where('owner_id', '=', auth()->user()->id )->value('id');
+        $movement = Movement::findOrFail($id);
+        $pagetitle = "Edit Movement";
+        return view('movements.edit', compact('movement', 'account', 'pagetitle'));
+    }
+
+    public function movementDelete($id){
+        $movement = Movement::findOrFail($id);
+        $movement->forceDelete();
+
+        return redirect()
+            ->route('movements.account', auth()->user()->id)
+            ->with('success', 'Account saved successfully');
     }
 
     public function movementStore(StoreMovementRequest $request)
     {
-        $movement = new Movement();
+        $movement = new Movement;
         $movement->fill($request->all());
-
-
+        $movement->account_id = auth()->user()->id;
+        $movement->movement_category_id = $request->input('category');
+        $movement->end_balance = $request->input('endBalance');
         $movement->save();
 
         return redirect()
@@ -63,7 +81,8 @@ class MovementsController extends Controller
         }
 
         $movementModel  = $request->validate([
-        ], [ // Custom Messages
+        ], [
+            //
         ]);
         $movement = Movement::findOrFail($id);
         $movement->fill($movementModel);
@@ -73,6 +92,5 @@ class MovementsController extends Controller
             ->route('movements.account')
             ->with('success', 'Movement saved successfully');
     }
-
 
 }

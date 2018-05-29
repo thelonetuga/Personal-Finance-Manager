@@ -9,6 +9,8 @@
 @section('content')
     <div class="container">
         <a class="btn btn-xs btn-primary" href="{{route('account.create')}}">Create Account</a>
+        <br>
+        <br>
 @if (count($accounts))
     <table class="table table-striped" style="background: #cce5ff">
     <thead>

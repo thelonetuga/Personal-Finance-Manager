@@ -7,13 +7,14 @@ use DB;
 
 class Movement extends Model
 {
+    public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'movement_category_id','date', 'value', 'type', 'end_balance'
+        'movement_category_id','date', 'value', 'type' //, 'end_balance'
     ];
 
     public function typeToStr()
@@ -62,4 +63,10 @@ class Movement extends Model
         return 'Unknown';
     }
 
+    function is_selected($current, $expected, $output = 'selected')
+    {
+        if ($current === $expected) {
+            return $output;
+        }
+    }
 }
