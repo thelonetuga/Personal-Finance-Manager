@@ -47,6 +47,19 @@ class AccountsController extends Controller
         return view('accounts.add', compact('account','pagetitle'));
     }
 
+        /**
+        * Show the form for editing the specified resource.
+        *
+        * @param  \App\User  $user
+        * @return \Illuminate\Http\Response
+        */
+    public function edit($id)
+    {
+        $account = Account::findOrFail($id);
+        $pagetitle = "Edit Account";
+        return view('accounts.edit', compact('account','pagetitle'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -69,25 +82,13 @@ class AccountsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($account_id)
-    {
-        $account = Account::findOrFail($account_id);
-        return view('accounts.edit', compact('account','pagetitle'));
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAccountRequest $request, $account_id)
+    public function update(UpdateAccountRequest $request, $id)
     {
         if ($request->has('cancel')) {
             return redirect()->action('AccountsController@accountsUser');
@@ -96,7 +97,7 @@ class AccountsController extends Controller
         $accountModel  = $request->validate([
         ], [ // Custom Messages
         ]);
-        $account = Account::findOrFail($account_id);
+        $account = Account::findOrFail($id);
         $account->fill($accountModel);
         $account->save();
 
@@ -112,7 +113,7 @@ class AccountsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function accountCLose( $id)
+    public function accountCLose($id)
     {
         Account::findOrFail($id)->delete();
 

@@ -33,14 +33,14 @@
             <td>{{ $account->typeToStr() }}</td>
             <td>{{ $movements }}</td>
             <td>
+                <a class="btn btn-xs btn-primary" href="{{route('account.edit',$account->id)}}">Edit</a>
+                <a class="btn btn-xs btn-success" href="{{route('movements.account', $account->id)}}">Movements</a>
                 <form action="{{ action('AccountsController@accountDelete', $account->id) }}" method="POST" role="form" class="inline">
                     @csrf
                     @method('delete')
                     <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
                     <button type="submit" class="btn btn-xs btn-danger">Delete </button>
                 </form>
-                <a class="btn btn-xs btn-primary" href="{{route('account.edit', $account->id)}}">Edit</a>
-                <a class="btn btn-xs btn-success" href="{{route('movements.account', $account->id)}}">Movements</a>
                 @if($account->deleted_at)
                 <form action="{{ action('AccountsController@accountReopen', $account->id) }}" method="POST" role="form" class="inline">
                     @csrf
