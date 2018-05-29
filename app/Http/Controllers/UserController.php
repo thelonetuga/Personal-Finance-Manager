@@ -20,9 +20,9 @@ class UserController extends Controller
     }
 
 
-    public function profile()
+    public function dashboard()
     {
-        return view('/me/profile');
+        return view('dashboard');
     }
 
     /**
@@ -206,9 +206,9 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit()
     {
-        $user = User::findOrFail($id);
+        $user = User::findOrFail(auth()->user()->id);
         return view('users.edit', compact('user','pagetitle'));
     }
 
@@ -219,9 +219,9 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update($request)
+    public function update()
     {
-
+        $request = request();
         $user = User::findOrFail($request->input('user_id'));
 
         $this->validate($request, [
@@ -248,7 +248,7 @@ class UserController extends Controller
         $user->save();
 
         return redirect()
-            ->route('profile')
+            ->route('dashboard')
             ->with('success', 'User saved successfully');
     }
 

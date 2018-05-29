@@ -26,7 +26,7 @@
                     @endif
                     <li><a href="{{route('about')}}">About</a></li>
                     <li><a href="{{route('profiles')}}">Profile of Users</a></li>
-                    <li><a href="{{route('profile')}}">My Profile</a></li>
+                    <li><a href="{{route('dashboard', Auth::user()->id)}}">My Profile</a></li>
                 @endauth
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -44,7 +44,7 @@
                             @endif
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a href="{{ route('users.edit',Auth::id()) }}">Edit Profile </a>
+                            <a href="{{ route('profile.edit') }}">Edit Profile </a>
                             <br>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();

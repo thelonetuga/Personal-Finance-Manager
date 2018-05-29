@@ -21,8 +21,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/welcome', 'StatisticsController@index')->name('welcome.index');
 Route::get('/users/create', 'UserController@create')->name('users.create');
 Route::post('/users/create', 'UserController@store')->name('users.store');
-Route::get('/users/{user}/edit', 'UserController@edit')->name('users.edit');
-Route::put('/users/{user}/edit', 'UserController@update')->name('users.update');
 Route::delete('/users/{user}', 'UserController@destroy')->name('users.destroy');
 
 Route::get('/about', 'HomeController@about')->name('about');
@@ -42,8 +40,8 @@ Route::get('/me/password', 'Auth\ResetPasswordController@showResetForm')->name('
 Route::patch('/me/password', 'Auth\ResetPasswordController@reset')->name('password.store');
 
 //US.10
-Route::get('/me/profile', 'UserController@profile')->name('profile');
-
+Route::get('/me/profile', 'UserController@edit')->name('profile.edit');
+Route::put('/me/profile', 'UserController@update')->name('profile.update');
 //US.11
 Route::get('/profiles', 'UserController@profiles')->name('profiles');
 //Route::get('/profiles', 'UserController@filter')->name('filter');
@@ -93,7 +91,7 @@ Route::delete('/document/{document}', 'MovementsController@documentDelete')->nam
 Route::get('/document/{document}', 'MovementsController@documentGet')->name('document.get');
 
 //US.26
-Route::get('/dashboard/{user}', 'DashboardController@dashboardUser')->name('dashboard');
+Route::get('/dashboard/{user}', 'UserController@dashboard')->name('dashboard');
 
 //US.29
 Route::post('/me/associates', 'AssociatesController@associatesPost')->name('associates.post');
