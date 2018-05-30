@@ -45,7 +45,7 @@ Route::put('/me/profile', 'UserController@update')->name('profile.update');
 //US.11
 Route::get('/profiles', 'UserController@profiles')->name('profiles');
 //US.12
-Route::get('/me/associates', 'AssociatesController@associatesGet')->name('associates.get');
+Route::get('/me/associates', 'AssociatesController@associatesGet')->name('associates');
 
 //US.13
 Route::get('/me/associate-of', 'AssociatesController@associatesOf')->name('associate.of');

@@ -14,12 +14,12 @@
             </thead>
             @foreach ($associates_of as $associate)
                 @foreach ($users as $user)
-                    @if (empty($associate->associated_user_id))
+                    @if (empty($associate->main_user_id))
                         <h2>No followers found</h2>
                     @else
                         <tbody>
                         <span class="associate-of"></span>
-                        @if ($user->id === $associate->main_user_id )
+                        @if ($user->id == $associate->main_user_id )
                             <tr>
                                 <td>
                                     {{ $user->name }}
@@ -28,7 +28,7 @@
                                     {{ $user->email }}
                                 </td>
                                 <td>
-                                    <a class="btn btn-link"  href="{{ route('accounts.users',$associate->associated_user_id) }}">Accounts</a>
+                                    <a class="btn btn-link"  href="{{ route('accounts.users',$associate->main_user_id) }}">Accounts</a>
                                 </td>
                             </tr>
                         @endif

@@ -18,7 +18,7 @@
                     @else
                         <tbody>
                         <span class="associate"></span>
-                            @if ($user->id === $associate->associated_user_id )
+                            @if ($user->id == $associate->associated_user_id )
                                 <tr>
                                     <td>
                                         {{ $user->name }}

@@ -25,7 +25,7 @@
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-success" name="ok">Add</button>
-        <a class="btn btn-default" href="{{route('users.index')}}">Cancel</a>
+        <a class="btn btn-default" href="{{route('dashboard')}}">Cancel</a>
     </div>
 </form>
 @endsection

@@ -27,7 +27,6 @@ class AssociatesController extends Controller
     {
         $users = \App\User::all();
         $associates = DB::table ('associate_members') ->where('main_user_id', '=', Auth::id())->get();
-
         return view('me.associates', compact('users','associates'));
     }
 

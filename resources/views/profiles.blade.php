@@ -9,8 +9,8 @@
         <button type="submit" class="btn btn-sm btn-success">
             <i class="glyphicon glyphicon-search"></i>
         </button>
-        <a class="btn  btn-primary btn-sm"   href="{{ route('associates.get') }}">He belong to</a>
-        <a class="btn  btn-primary btn-sm"   href="{{ route('associate.of') }}">I Belong To</a>
+        <a class="btn  btn-primary btn-sm"   href="{{ route('associates') }}">Associate</a>
+        <a class="btn  btn-primary btn-sm"   href="{{ route('associate.of') }}">Associate Of</a>
         <br>
     </form>
     @if (count($users))
@@ -26,7 +26,7 @@
                 @foreach ($users as $user)
                     <tr>
                         <td>
-                            @if(empty($user->profile_photo))
+                            @if($user->profile_photo == null)
                                 <img src="img/avatars/default.png" style="width:50px; height:50px; float:left; border-radius:50%; margin-left:150px; alt:'';">
                             @else
                                 <img src="storage/profiles/{{$user->profile_photo}}" style="width:50px; height:50px; float:left; border-radius:50%; margin-left:150px; alt:'';">
@@ -35,12 +35,12 @@
                         <td>{{ $user->name }}</td>
                         <td style="text-align: center">
                         @foreach($associates as $associate)
-                            @if ($user->id === $associate->associated_user_id )
+                            @if ($user->id == $associate->associated_user_id )
                                     <span>associate</span>
                             @endif
                         @endforeach
-                        @foreach($associates_of as $associate)
-                            @if ($user->id === $associate->main_user_id )
+                        @foreach($associates_of as $associateOf)
+                            @if ($user->id == $associateOf->main_user_id )
                                     <span>associate-of</span>
                             @endif
                         @endforeach

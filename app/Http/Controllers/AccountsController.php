@@ -148,13 +148,13 @@ class AccountsController extends Controller
     public function closed(){
         $accounts = Account::onlyTrashed()->where('owner_id', '=', auth()->user()->id )->get();
         $pagetitle = "List of Accounts";
-        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
+        return view('accounts.list', compact('accounts','pagetitle'));
     }
 
     public function opened(){
         $accounts = Account::where('owner_id', '=', auth()->user()->id )->get();
         $pagetitle = "List of Accounts";
-        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
+        return view('accounts.list', compact('accounts','pagetitle'));
     }
 
 }

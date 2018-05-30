@@ -33,28 +33,31 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->created_at }}</td>
                     <td>
+                        @if($user->admin)
+                            <span class="user-is-admin">admin</span>
+                        @endif
+                        @if($user->blocked)
+                                <span class="user-is-blocked">blocked</span>
+                        @endif
                         <div class="form-group">
-                            @if(Auth::user()->id != $user->id && $user->admin = 0 )
-                                @if ($user->admin)
-                                    <span class="user-is-admin"></span>
+                            @if(Auth::user()->id != $user->id && $user->admin == 1)
                                     <form  method="post" action="{{route('users.demote', $user->id)}}">
                                         {{ csrf_field() }}
                                         {{ method_field('PATCH') }}
                                         <button type="submit" class="btn btn-xs btn-danger">Demote</button>
                                     </form>
-                                @else
+                            @else
                                     <form method="post" action="{{route('users.promote', $user->id)}}">
                                         {{ csrf_field() }}
                                         {{ method_field('PATCH') }}
                                         <button type="submit" class="btn btn-xs btn-success">Promote</button>
                                     </form>
-                                @endif
+                             @endif
                         </div>
                     </td>
                     <td>
                         <div class="form-group">
                             @if ($user->blocked)
-                                <span class="user-is-blocked"></span>
                                 <form  method="post" action="{{route('users.unblock', $user->id)}}">
                                     {{ csrf_field() }}
                                     {{ method_field('PATCH') }}
@@ -66,7 +69,6 @@
                                     {{ method_field('PATCH') }}
                                     <button type="submit" class="btn btn-xs btn-danger">Block</button>
                                 </form>
-                            @endif
                             @endif
                         </div>
                     </td>
