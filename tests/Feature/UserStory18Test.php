@@ -208,7 +208,8 @@ class UserStory18Test extends BaseAccountsTest
 
         $this->actingAs($this->mainUser)
             ->put('/account/'.$account->id, $data)
-            ->assertSuccessfulOrRedirect();
+            ->assertSuccessfulOrRedirect()
+            ->assertSessionHasNoErrors(['code']);
 
         $this->assertDatabaseHas('accounts', ['id' => $account->id, 'code' => $data['code']]);
     }

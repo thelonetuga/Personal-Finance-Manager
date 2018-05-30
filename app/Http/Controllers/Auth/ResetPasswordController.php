@@ -43,7 +43,7 @@ class ResetPasswordController extends Controller
         $this->middleware('auth');
     }
 
-    public function reset(Request $request){
+    public function updatePassword(Request $request){
 
 
         $this->validate($request,[
@@ -52,15 +52,20 @@ class ResetPasswordController extends Controller
             'password_confirmation'=> 'required|same:password',
         ]);
 
+
         $user=User::findOrFail(Auth::user()->id);
         $user->password = Hash::make($request->input('password'));
         $user->save();
 
 
         return redirect()
-            ->route('profile')
+            ->route('dashboard',$user->id)
             ->with('success', 'User password update successfully');
 
+    }
+
+    public function showForm(){
+        return view('auth.passwords.updatePassword');
     }
 
 }

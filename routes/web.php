@@ -37,7 +37,7 @@ Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.d
 
 //US.9
 Route::get('/me/password', 'Auth\ForgotPasswordController@passwordReset')->name('email.form');
-Route::patch('/me/password', 'Auth\ResetPasswordController@reset')->name('password.store');
+Route::patch('/me/password', 'Auth\ResetPasswordController@updatePassword')->name('password.store');
 
 //US.10
 Route::get('/me/profile', 'UserController@edit')->name('profile.edit');

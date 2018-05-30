@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ConfirmPassword implements Rule
 {
@@ -26,7 +27,8 @@ class ConfirmPassword implements Rule
      */
     public function passes($attribute, $value)
     {
-        return($value == Auth::user()->password);
+        return Hash::check($value, Auth::user()->password);
+
     }
 
     /**
