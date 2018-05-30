@@ -16,12 +16,12 @@
 
                         <form class="form-horizontal" role="form"  method="post" action="{{ route('password.store') }}">
                             @csrf
+                            @method('PATCH')
                             <div class="form-group{{ $errors->has('old_password') ? ' has-error' : '' }}">
                                 <label for="old_password" class="col-md-4 control-label">Old Password</label>
                                 <div class="col-md-6">
                                     <input type="hidden" name="token" value="{{csrf_token()}}">
                                     <input id="old_password" type="password" class="form-control" name="old_password" required>
-
                                 </div>
                             </div>
 
