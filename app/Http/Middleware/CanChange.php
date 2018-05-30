@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Response;
 
-class IsBlocked
+class CanChange
 {
     /**
      * Handle an incoming request.
@@ -16,9 +16,10 @@ class IsBlocked
      */
     public function handle($request, Closure $next)
     {
-            if ($request->user() && $request->user()->blocked == 0) {
-                return $next($request);
-            }
-       return Response::make(view('dashboard'),403);
+        if ($request->route('user')->id != $request->user()->id){
+            return $next($request);
+        }
+        return Response::make(view('dashboard'),403);
+
     }
 }

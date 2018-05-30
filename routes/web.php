@@ -30,13 +30,13 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/users', 'UserController@index')->name('users.list');
 
 //US.7
-Route::patch('/users/{user}/block', 'UserController@blockUser')->name('users.blocked')->middleware('auth','admin','blocked');
-Route::patch('/users/{user}/unblock', 'UserController@unBlockUser')->name('users.unblock')->middleware('auth','admin','blocked');
-Route::patch('/users/{user}/promote', 'UserController@promoteUser')->name('users.promote')->middleware('auth','admin','blocked');
-Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.demote')->middleware('auth','admin','blocked');
+Route::patch('/users/{user}/block', 'UserController@blockUser')->name('users.blocked')->middleware('auth','admin');
+Route::patch('/users/{user}/unblock', 'UserController@unBlockUser')->name('users.unblock')->middleware('auth','admin');
+Route::patch('/users/{user}/promote', 'UserController@promoteUser')->name('users.promote')->middleware('auth','admin');
+Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.demote')->middleware('auth','admin');
 
 //US.9
-Route::get('/me/password', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::get('/me/password', 'Auth\ForgotPasswordController@passwordReset')->name('email.form');
 Route::patch('/me/password', 'Auth\ResetPasswordController@reset')->name('password.store');
 
 //US.10
@@ -60,7 +60,7 @@ Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('a
 Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close')->middleware('owner');
 
 //US.16
-Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('owner');
+Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('auth','owner');
 
 //US.17
 Route::get('/account', 'AccountsController@create')->name('account.create');

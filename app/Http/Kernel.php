@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'associateOf' => \App\Http\Middleware\AssociateOf::class,
         'owner' => \App\Http\Middleware\IsOwner::class,
         'canOpen' => \App\Http\Middleware\CanOpen::class,
+        'canChange' => \App\Http\Middleware\CanChange::class,
     ];
 }

@@ -160,6 +160,7 @@ class UserStory11Test extends UserStoryTestCase
             ->get('/profiles')
             ->assertStatus(200)
             ->assertSeeCount('<span>associate</span>', 2, 'Associate tags not found');
+
     }
 
     // @codingStandardsIgnoreStart

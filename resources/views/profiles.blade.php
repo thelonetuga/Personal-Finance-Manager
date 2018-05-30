@@ -36,12 +36,12 @@
                         <td style="text-align: center">
                         @foreach($associates as $associate)
                             @if ($user->id === $associate->associated_user_id )
-                                 He belong to my group
+                                    <span>associate</span>
                             @endif
                         @endforeach
                         @foreach($associates_of as $associate)
                             @if ($user->id === $associate->main_user_id )
-                                I belong to his group
+                                    <span>associate-of</span>
                             @endif
                         @endforeach
                         </td>

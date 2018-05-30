@@ -5,7 +5,9 @@
 @extends('layouts.navBar')
 
 @section('title', 'List accounts')
-
+@if(count($errors) > 0)
+    @include('partials.errors')
+@endif
 @section('content')
     <div class="container">
         <a class="btn btn-xs btn-primary" href="{{route('account.create')}}">Create Account</a>

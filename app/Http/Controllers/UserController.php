@@ -152,18 +152,18 @@ class UserController extends Controller
             return view('users.list', compact('users', 'pagetitle'));
     }
 
-    public function profiles(Request $request, User $user)
+    public function profiles(Request $request)
     {
         $pagetitle = "Profiles of Users";
         $name = $request->get('name');
         // Search for  a user based on their name.
         if ($request->has('name') ) {
-            $users = $user->where('name', 'like', '%' . $name . '%')->get();
+            $users = User::where('name', 'like', '%' . $name . '%')->get();
         }else{
             $users = \App\User::all();
         }
 
-        $associates = DB::table ('associate_members') ->where('main_user_id', '=', Auth::id())->get();
+        $associates = DB::table ('associate_members') ->where('main_user_id', '=',Auth::id())->get();
         $associates_of = DB::table ('associate_members') ->where('associated_user_id', '=', Auth::id())->get();
 
         return view('profiles', compact('users','associates','associates_of', 'pagetitle'));
@@ -259,36 +259,65 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()
-            ->route('users.index')
+            ->route('users.list')
             ->with('success', 'User deleted successfully');
     }
 
-    public function blockUser(User $user)
+    public function blockUser($id)
     {
-        $user->toggleBlock();
+        $user = User::findOrFail($id);
+        if (Auth::id() == $user->id ) {
+            abort(403);
+        }
+        if ($user->blocked == 1 && $user->id === $id) {
+            return redirect()->route('users.list')->with('User is already Blocked!');
+        }
+        $user->blocked = 1;
         $user->save();
-        return redirect()->back();
+        return redirect()->route('users.list')->with('success', 'User has been Blocked!');
     }
 
-    public function unBlockUser(User $user)
+    public function unBlockUser($id)
     {
-        $user->toggleBlock();
+        $user = User::findOrFail($id);
+        if (Auth::id() == $user->id) {
+            abort(403);
+        }
+        if ($user->blocked == 0 && $user->id === $id && $user->admin == 1) {
+            return redirect()->route('users.list')->with('User is already Unblocked!');
+        }
+        $user->blocked = 0;
         $user->save();
-        return redirect()->back();
+        return redirect()->route('users.list')->with('success', 'User has been Unblocked!');
     }
 
-    public function promoteUser(User $user)
+    public function promoteUser($id)
     {
-        $user->toggleDemote();
+        $user = User::findOrFail($id);
+        if (Auth::id() == $user->id) {
+            abort(403);
+        }
+        if ($user->admin == 1 && $user->id === $id) {
+            return redirect()->route('users.list')->with('User is already an Administrator!');
+        }
+        $user->admin = 1;
         $user->save();
-        return redirect()->back();
+        return redirect()->route('users.list')->with('success', 'User has been promoted to Administrator!');
     }
 
-    public function demoteUser(User $user)
+
+    public function demoteUser($id)
     {
-        $user->toggleDemote();
+        $user = User::findOrFail($id);
+        if (Auth::id() == $user->id) {
+            abort(403);
+        }
+        if ($user->admin == 0 && $user->id === $id) {
+            return redirect()->route('users.list')->with('User is already a Client!');
+        }
+        $user->admin = 0;
         $user->save();
-        return redirect()->back();
+        return redirect()->route('users.list')->with('success', 'User has been demoted to Client!');
     }
 
     public function filter(Request $request, User $user)

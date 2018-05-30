@@ -18,6 +18,7 @@
                         <h2>No followers found</h2>
                     @else
                         <tbody>
+                        <span class="associate-of"></span>
                         @if ($user->id === $associate->main_user_id )
                             <tr>
                                 <td>

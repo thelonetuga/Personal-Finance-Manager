@@ -77,7 +77,8 @@ class AccountsController extends Controller
         $account->fill($request->all());
         $account->owner_id = auth()->user()->id;
         $account->account_type_id = $request->input('type');
-        $account->code = Hash::make($request->code);
+        $account->code = $request->code;
+        $account->created_at == Carbon::now();
 
         $account->save();
 
@@ -120,7 +121,7 @@ class AccountsController extends Controller
 
     public function accountCLose($id)
     {
-        $account = Account::findOrFail($id);
+        $account = Account::find($id);
         $account->deleted_at == Carbon::now();
             $account->delete();
             return redirect()
@@ -129,15 +130,17 @@ class AccountsController extends Controller
     }
 
     public function accountDelete($id){
-        $account = Account::findOrFail($id);
-            $account->forceDelete();
-            return redirect()
-                ->route('accounts.users', auth()->user()->id)
-                ->with('success', 'Account saved successfully');
+        $account = Account::find($id);
+        $account->forceDelete();
+        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function accountReopen($id){
-        $account = Account::findOrFail($id);
+        $account = Account::onlyTrashed()->find($id);
         $account->restore();
         return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
     }
@@ -145,13 +148,13 @@ class AccountsController extends Controller
     public function closed(){
         $accounts = Account::onlyTrashed()->where('owner_id', '=', auth()->user()->id )->get();
         $pagetitle = "List of Accounts";
-        return view('accounts.list', compact('accounts', 'pagetitle'));
+        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
     }
 
     public function opened(){
         $accounts = Account::where('owner_id', '=', auth()->user()->id )->get();
         $pagetitle = "List of Accounts";
-        return view('accounts.list', compact('accounts', 'pagetitle'));
+        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
     }
 
 }

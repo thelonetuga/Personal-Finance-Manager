@@ -26,18 +26,15 @@ class AssociatesController extends Controller
     public function associatesGet()
     {
         $users = \App\User::all();
-        $pagetitle = "users who follow me";
-
         $associates = DB::table ('associate_members') ->where('main_user_id', '=', Auth::id())->get();
 
-        return view('me.associates', compact('users','associates', 'pagetitle'));
+        return view('me.associates', compact('users','associates'));
     }
 
     public function associatesOf()
     {
         $users = \App\User::all();
-        $pagetitle = "users who follow me";
         $associates_of = DB::table ('associate_members') ->where('associated_user_id', '=', Auth::id())->get();
-        return view('me.associates_of', compact('users','associates_of', 'pagetitle'));
+        return view('me.associates_of', compact('users','associates_of'));
     }
 }

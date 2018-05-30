@@ -23,7 +23,7 @@ class AssociateOf
             if (Auth::user() && ($request->route('user') == Auth::user()->id || count(DB::table('associate_members')->where('associated_user_id', Auth::user()->id)->where('main_user_id',$request->route('user') )->get())>0)){
                 return $next($request);
             }
-            return Response::make(view('me.profile'),403);
+            return Response::make(view('dashboard'),403);
         }else{
             return Response::make(view('welcome'),404);
         }

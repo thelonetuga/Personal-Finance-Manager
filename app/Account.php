@@ -56,7 +56,7 @@ class Account extends Model
     }
 
     public function movements(){
-        return $this->hasMany('App\Movement');
+        return $this->hasMany('App\Movement', 'account_id', 'id');
     }
 }
 
