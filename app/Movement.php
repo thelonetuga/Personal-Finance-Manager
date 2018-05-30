@@ -14,7 +14,7 @@ class Movement extends Model
      * @var array
      */
     protected $fillable = [
-        'movement_category_id','date', 'value', 'type' //, 'end_balance'
+        'movement_category_id','date', 'value', 'type', 'end_balance', 'description',
     ];
 
     public function typeToStr()

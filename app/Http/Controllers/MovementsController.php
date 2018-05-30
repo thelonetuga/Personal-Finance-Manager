@@ -30,7 +30,7 @@ class MovementsController extends Controller
     public function movementsAccount()
     {
             $account = Account::where('owner_id', '=', auth()->user()->id )->value('id');
-            $movements = Movement::where('account_id', '=', Auth::id() )->get();
+            $movements = Movement::where('account_id', '=', Auth::id() )->orderby('date', 'desc')->get();
             $pagetitle = "List of Movements";
             return view('movements.list', compact('movements', 'account', 'pagetitle'));
     }
@@ -60,17 +60,35 @@ class MovementsController extends Controller
             ->with('success', 'Account saved successfully');
     }
 
-    public function movementStore(StoreMovementRequest $request)
+    public function movementStore(StoreMovementRequest $request, $account)
     {
+        dump($account);
         $movement = new Movement;
         $movement->fill($request->all());
-        $movement->account_id = auth()->user()->id;
+        $movement->account_id =$account;
         $movement->movement_category_id = $request->input('category');
-        $movement->end_balance = $request->input('endBalance');
+
+        $number = $movement->movement_category_id;
+        
+        if( ($number > 1) && $number < 12){
+            $movement->type = 'expense';
+        }else{
+            $movement->type = 'revenue';
+        }
+        $movement->start_balance = $request->input('startBalance');
+
+        if($movement->type == 'revenue'){
+            $movement->end_balance = $movement->start_balance + $movement->value;
+        }else{
+            $movement->end_balance = $movement->start_balance - $movement->value;
+        }
+
+        $movement->description =$request->input('comment');
+
         $movement->save();
 
         return redirect()
-            ->route('movements.account')
+            ->route('movements.account', $account)
             ->with('success', 'Movement added successfully');
     }
 

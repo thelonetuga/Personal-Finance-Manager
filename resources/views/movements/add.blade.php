@@ -7,7 +7,7 @@
         @if(count($errors) > 0)
             @include('partials.errors')
         @endif
-            <form action="{{ route('movement.store',$account) }}" method="post" class="form-group">
+            <form action="{{ route('movement.store', $account) }}" method="post" class="form-group">
                 {{csrf_field()}}
                 @include('movements.partials.add-edit')
                 <div class="form-group">
