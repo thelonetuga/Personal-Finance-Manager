@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 
-class ResetPasswordController extends Controller
+class ChangePasswordController extends Controller
 {
     /*
     |--------------------------------------------------------------------------

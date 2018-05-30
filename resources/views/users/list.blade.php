@@ -34,13 +34,14 @@
                     <td>{{ $user->created_at }}</td>
                     <td>
                         @if($user->admin)
-                            <span class="user-is-admin">admin</span>
+                            <span class="user-is-admin"></span>
                         @endif
                         @if($user->blocked)
-                                <span class="user-is-blocked">blocked</span>
+                                <span class="user-is-blocked"></span>
                         @endif
                         <div class="form-group">
-                            @if(Auth::user()->id != $user->id && $user->admin == 1)
+            @if(Auth::user()->id != $user->id )
+                            @if ($user->admin)
                                     <form  method="post" action="{{route('users.demote', $user->id)}}">
                                         {{ csrf_field() }}
                                         {{ method_field('PATCH') }}
@@ -72,6 +73,7 @@
                             @endif
                         </div>
                     </td>
+                    @endif
                 </tr>
             @endforeach
             </tbody>
