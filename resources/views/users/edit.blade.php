@@ -15,7 +15,7 @@
             <button type="submit" class="btn btn-success" name="ok">Save</button>
             <a type="button" class="btn btn-warning" name="cancel" href="{{ route('dashboard',  auth()->user()->id)}}">Cancel</a>
             <input type="hidden" name="_token" value="{{csrf_token()}}">
-            <a class="btn btn-link" href="{{ route('password.reset', csrf_token()) }}">Reset Password</a>
+            <a class="btn btn-link" href="{{ route('passwordchange.form') }}">Change Password</a>
         </div>
     </div>
 </form>

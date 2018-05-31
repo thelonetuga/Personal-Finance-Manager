@@ -25,6 +25,7 @@ Route::delete('/users/{user}', 'UserController@destroy')->name('users.destroy');
 
 Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+//us.4
 
 //US.5
 Route::get('/users', 'UserController@index')->name('users.list');
@@ -36,8 +37,8 @@ Route::patch('/users/{user}/promote', 'UserController@promoteUser')->name('users
 Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.demote')->middleware('auth','admin');
 
 //US.9
-Route::get('/me/password', 'Auth\ForgotPasswordController@passwordReset')->name('email.form');
-Route::patch('/me/password', 'Auth\ResetPasswordController@updatePassword')->name('password.store');
+Route::get('/me/password','Auth\ChangePasswordController@showForm')->name('passwordchange.form');
+Route::patch('/me/password', 'Auth\ChangePasswordController@updatePassword')->name('password.change');
 
 //US.10
 Route::get('/me/profile', 'UserController@edit')->name('profile.edit');

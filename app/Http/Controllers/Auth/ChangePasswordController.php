@@ -31,7 +31,7 @@ class ChangePasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -42,7 +42,6 @@ class ChangePasswordController extends Controller
     {
         $this->middleware('auth');
     }
-
     public function updatePassword(Request $request){
 
 
@@ -63,9 +62,8 @@ class ChangePasswordController extends Controller
             ->with('success', 'User password update successfully');
 
     }
-
     public function showForm(){
-        return view('auth.passwords.updatePassword');
+        return view('auth.passwords.change');
     }
 
 }
