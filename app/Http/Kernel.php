@@ -62,8 +62,9 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\IsAdmin::class,
         'blocked' => \App\Http\Middleware\IsBlocked::class,
         'associateOf' => \App\Http\Middleware\AssociateOf::class,
-        'owner' => \App\Http\Middleware\IsOwner::class,
+        'canDelete' => \App\Http\Middleware\canDelete::class,
         'canOpen' => \App\Http\Middleware\CanOpen::class,
         'canChange' => \App\Http\Middleware\CanChange::class,
+        'isOwner' => \App\Http\Middleware\IsOwner::class,
     ];
 }

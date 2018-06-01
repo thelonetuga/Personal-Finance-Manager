@@ -10,6 +10,7 @@ use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Validation\Rule;
 
 //$aux = \App\User::id();
 
@@ -73,18 +74,24 @@ class AccountsController extends Controller
      */
     public function store(StoreAccountRequest $request)
     {
-        $account = new Account;
-        $account->fill($request->all());
-        $account->owner_id = auth()->user()->id;
-        $account->account_type_id = $request->input('type');
-        $account->code = $request->code;
-        $account->created_at == Carbon::now();
+        if ($request->has('cancel')) {
+            return redirect()->route('dashboard');
+        }
+        $account = $request->validate([
+            'account_type_id' => 'required|exists:account_types,id',
+            'date' => 'nullable|date',
+            'code' => 'required','string',Rule::unique('accounts')->where(function ($query){return $query->where('owner_id', Auth::user()->id);}),
+            'start_balance' => 'required|numeric',
+            'description' => 'nullable',
+        ], [ // Custom Messages
+        ]);
+        $account['current_balance'] = $account['start_balance'];
+        $account['owner_id'] = Auth::user()->id;
+        $account['created_at'] = date("Y-m-d");
 
-        $account->save();
 
-        return redirect()
-            ->route('accounts.users', auth()->user()->id)
-            ->with('success', 'Account saved successfully');
+        Account::create($account);
+        return redirect()->route('dashboard')->with('success','Account created successfully!');
     }
 
     /**
@@ -101,6 +108,11 @@ class AccountsController extends Controller
         }
 
         $accountModel  = $request->validate([
+            'account_type_id' => 'required',
+            'date' => 'required',
+            'code' => 'required',
+            'start_balance' => 'required',
+            'description',
         ], [ // Custom Messages
         ]);
         $account = Account::findOrFail($id);
@@ -137,12 +149,15 @@ class AccountsController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Http\Response
      */
     public function accountReopen($id){
-        $account = Account::onlyTrashed()->find($id);
-        $account->restore();
-        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
+            if ($account = Account::onlyTrashed()->findOrFail($id)){
+                $account->restore();
+                return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
+            }else{
+                return Response::make(view('dashboard'),404);
+            }
     }
 
     public function closed(){
