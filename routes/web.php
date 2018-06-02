@@ -97,6 +97,6 @@ Route::get('/dashboard/{user}', 'UserController@dashboard')->name('dashboard');
 Route::post('/me/associates', 'AssociatesController@associatesPost')->name('associates.post');
 
 //US.30
-Route::delete('/me/associates/{user}', 'AssociatesController@associatesUserDelete')->name('associates.user.delete');
+Route::delete('/me/associates/{user}', 'AssociatesController@associateOfDelete')->name('associates.delete');
 
 Route::get('/home', 'HomeController@index')->name('home');

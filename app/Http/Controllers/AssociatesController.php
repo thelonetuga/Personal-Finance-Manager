@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\associate;
 use DB;
 use Illuminate\Support\Facades\Auth;
+
 
 class AssociatesController extends Controller
 {
@@ -36,4 +38,21 @@ class AssociatesController extends Controller
         $associates_of = DB::table ('associate_members') ->where('associated_user_id', '=', Auth::id())->get();
         return view('me.associates_of', compact('users','associates_of'));
     }
+
+    public function associateOfDelete()
+    {
+        DB::table ('associate_members') ->where('associated_user_id', '=', Auth::id())->delete();
+
+        return redirect()
+            ->route('profiles')
+            ->with('success', 'Associate deleted successfully');
+    }
+
+    public function associatesPost()
+    {
+        DB::table('associate_members')->insert(
+            ['main_user_id' => intval('add_user'), 'associated_user_id' => Auth::id()]
+        );
+    }
+
 }

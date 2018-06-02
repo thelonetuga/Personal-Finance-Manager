@@ -57,7 +57,7 @@ class MovementsController extends Controller
 
         return redirect()
             ->route('movements.account', auth()->user()->id)
-            ->with('success', 'Account saved successfully');
+            ->with('success', 'Movement deleted successfully');
     }
 
     public function movementStore(StoreMovementRequest $request, $account)

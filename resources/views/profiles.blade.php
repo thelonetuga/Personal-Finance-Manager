@@ -42,8 +42,21 @@
                         @foreach($associates_of as $associateOf)
                             @if ($user->id == $associateOf->main_user_id )
                                     <span>associate-of</span>
+                                    <form action="{{ action('AssociatesController@associateOfDelete', $user) }}" method="POST" role="form" class="inline">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="hidden" name="associate_id" value="{{ $user->id }}">
+                                        <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                                    </form>
                             @endif
                         @endforeach
+                        </td>
+                        <td>
+                            <form action="{{ route('associates.post') }}" method="POST" role="form" class="inline">
+                                @csrf
+                                <input type="hidden" name="add_user" value="{{ $user->id }}">
+                                <button type="submit" class="btn btn-xs btn-success">Add_user</button>
+                            </form>
                         </td>
                     </tr>
 
