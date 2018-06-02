@@ -2,10 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Account;
 use Closure;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 
 class IsOwner
 {
@@ -18,11 +15,11 @@ class IsOwner
      */
     public function handle($request, Closure $next)
     {
-        $account = Account::findorfail($request->route('account'));
-        if(auth()->user()->id == $account->owner_id) {
-            if (count($account->movements()->get()) == 0 && $account->last_movement_date == null)
+        $user_id = Account::where('owner_id', '=', auth()->user()->id)->value('owner_id');
+        if ($request->account()->user->id == $user_id) {
             return $next($request);
         }
-        return Response::make(view('home'),403);
+
+        return Response::make(view('dashboard'),403);
     }
 }

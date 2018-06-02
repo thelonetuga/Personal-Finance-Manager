@@ -45,13 +45,13 @@
                     <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
                     <button type="submit" class="btn btn-xs btn-danger">Delete </button>
                 </form>
-                @if($account->deleted_at)
-                <form action="{{ action('AccountsController@accountReopen', $account->id) }}" method="POST" role="form" class="inline">
-                    @csrf
-                    @method('patch')
-                    <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
-                    <button type="submit" class="btn btn-xs btn-warning">Reopen</button>
-                </form>
+                @if($account->deleted_at )
+                        <form action="{{ action('AccountsController@accountReopen', $account->id) }}" method="POST" role="form" class="inline">
+                            @csrf
+                            @method('patch')
+                            <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
+                            <button type="submit" class="btn btn-xs btn-warning">Reopen</button>
+                        </form>
                 @else
                     <form action="{{ action('AccountsController@accountClose', $account->id) }}" method="POST" role="form" class="inline">
                         @csrf
