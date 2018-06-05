@@ -1,7 +1,7 @@
 {{--@dump($errors)--}}
 <div class="form-group">
-    <label for="inputMovementCategory">Movement Category</label>
-    <select name="category" class="form-control" id="inputMovementCategory" value="{{ old('category', $movement->movement_category_id) }}">
+    <label for="movement_category_id">Movement Category</label>
+    <select name="movement_category_id" class="form-control" id="movement_category_id">
         <option disabled selected> -- select an option -- </option>
         <option value="1">Food</option>
         <option value="2">Clothes</option>
@@ -22,47 +22,49 @@
         <option value="17">Dividends</option>
         <option value="18">Product sales</option>
     </select>
-    @if ($errors->has('category'))
-        <em>{{ $errors->first('category') }}</em>
+    @if ($errors->has('movement_category_id'))
+        <em>{{ $errors->first('movement_category_id') }}</em>
     @endif
 </div>
 
 <div class="form-group">
-    <label for="inputMovementType">Movement Type</label>
-    <input type="text" class="form-control" name="type" autocomplete="on" id="inputMovementType" placeholder="Type" value="{{ old('type', $movement->value ) }}"/>
-    @if ($errors->has('type'))
-        <em>{{ $errors->first('type') }}</em>
-    @endif
-</div>
-
-
-<div class="form-group">
-    <label for="inputMovementDate">Movement Date</label>
-    <input type="text" class="form-control" name="date" id="inputMovementDate" placeholder="YYYY/DD/MM" data-fv-date-format="YYYY/DD/MM" value="{{ old('date', $movement->date ) }}"/>
+    <label for="date">Movement Date</label>
+    <input type="text" class="form-control" name="date" id="date" placeholder="YYYY/DD/MM" data-fv-date-format="YYYY/DD/MM" value="{{ old('date', $movement->date ) }}"/>
     @if ($errors->has('date'))
         <em>{{ $errors->first('date') }}</em>
     @endif
 </div>
 <div class="form-group">
-    <label for="inputMovementStartBalance">Start Balance</label>
-    <input type="text" class="form-control" name="startBalance" id="inputMovementStartBalance" placeholder="Start Balance" value="{{ old('startBalance', $movement->start_balance ) }}"/>
-    @if ($errors->has('startBalance'))
-        <em>{{ $errors->first('startBalance') }}</em>
-    @endif
-</div>
-<div class="form-group">
-    <label for="inputMovementValue">Movement Value</label>
-    <input type="text" class="form-control" name="value" id="inputMovementValue" placeholder="Value" value="{{ old('value', $movement->value ) }}"/>
+    <label for="value">Movement Value</label>
+    <input type="text" class="form-control" name="value" id="value" placeholder="Value" value="{{ old('value', $movement->value ) }}"/>
     @if ($errors->has('value'))
         <em>{{ $errors->first('value') }}</em>
     @endif
 </div>
 <div class="form-group">
-    <label for="inputMovementDescription">Description</label>
-    <input type="text" class="form-control" name="comment" id="inputMovementDescription" placeholder="Enter text here..." style="height:75px" value="{{ old('comment', $movement->description ) }}"/>
-    @if ($errors->has('comment'))
-        <em>{{ $errors->first('comment') }}</em>
+    <label for="description">Description</label>
+    <br>
+    <textarea rows="2" cols="156" name="description" id="description" placeholder="Enter text here..."></textarea>
+    @if ($errors->has('description'))
+        <em>{{ $errors->first('description') }}</em>
     @endif
+</div>
+<div class="form-group">
+    <div>
+        <label for="document_file">Document</label>
+        <br>
+        <div class="form-control">
+            <input type="file" name="document_file">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="documentDescription">Document description</label>
+        <br>
+        <textarea rows="2" cols="156" name="documentDescription" id="documentDescription" placeholder="Enter text here..."></textarea>
+        @if ($errors->has('documentDescription'))
+            <em>{{ $errors->first('documentDescription') }}</em>
+        @endif
+    </div>
 </div>
 
 

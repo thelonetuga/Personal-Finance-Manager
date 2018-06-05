@@ -6,8 +6,11 @@ use App\Account;
 use App\Http\Requests\StoreMovementRequest;
 use App\Http\Requests\UpdateMovementRequest;
 use App\Movement;
+use App\Document;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class MovementsController extends Controller
 {
@@ -29,8 +32,8 @@ class MovementsController extends Controller
      */
     public function movementsAccount()
     {
-            $account = Account::where('owner_id', '=', auth()->user()->id )->value('id');
-            $movements = Movement::where('account_id', '=', Auth::id() )->orderby('date', 'desc')->get();
+            $account = request()->route('account');
+            $movements = Movement::where('account_id', '=',$account)->orderby('date', 'desc')->get();
             $pagetitle = "List of Movements";
             return view('movements.list', compact('movements', 'account', 'pagetitle'));
     }
@@ -60,32 +63,41 @@ class MovementsController extends Controller
             ->with('success', 'Movement deleted successfully');
     }
 
-    public function movementStore(StoreMovementRequest $request, $account)
+    public function movementStore( $account)
     {
-        dump($account);
+        $request = request();
+        $data =$request-> validate([
+            'movement_category_id' => 'required|integer|between:1,18',
+            'date' => 'date_format:"Y/m/d"|required',
+            'value' => 'required|numeric|between:-9999.99,9999.99',
+            'description'=>'string|nullable',
+            'document_file'=> 'file|mimes:pdf,jpeg, PNG',
+            'documentDescription'=> 'string|nullable'
+        ]);
         $movement = new Movement;
-        $movement->fill($request->all());
-        $movement->account_id =$account;
-        $movement->movement_category_id = $request->input('category');
-
-        $number = $movement->movement_category_id;
-        
-        if( ($number > 1) && $number < 12){
-            $movement->type = 'expense';
-        }else{
-            $movement->type = 'revenue';
-        }
-        $movement->start_balance = $request->input('startBalance');
-
-        if($movement->type == 'revenue'){
-            $movement->end_balance = $movement->start_balance + $movement->value;
-        }else{
-            $movement->end_balance = $movement->start_balance - $movement->value;
-        }
-
-        $movement->description =$request->input('comment');
+        $movement->fill($data);
+        $movement->account_id = $account;
+        $movement->movement_category_id = $request->input('movement_category_id');
+        $movement->end_balance = '0';
+        $movement->start_balance= '0';
+        $movement->description = $data['description'];
+        $movement->created_at = Carbon::now();
 
         $movement->save();
+
+        if (request()->hasfile('document_file') && request()->file('document_file')->isValid()) {
+            $document= new Document;
+            $document->type = $request->file('document_file')->getClientOriginalExtension();
+            $document->original_name = $request->file('document_file')->getClientOriginalName();
+            $document->description = $data['documentDescription'];
+            $document->created_at = Carbon::now();
+
+
+            $document->save();
+            $movement->document_id = $document->id;
+            $movement->save();
+            Storage::putFileAs('documents/' . $movement->account_id, $request->file('document_file'), $movement->id . '.' . $document['type']);
+        }
 
         return redirect()
             ->route('movements.account', $account)
@@ -109,6 +121,13 @@ class MovementsController extends Controller
         return redirect()
             ->route('movements.account')
             ->with('success', 'Movement saved successfully');
+    }
+
+    public function showFormDocument ($movement)
+    {
+        $mov = Movement::findOrFail($movement);
+
+        return view('movements.add-documents', compact('mov'));
     }
 
 }

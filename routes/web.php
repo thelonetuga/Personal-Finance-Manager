@@ -26,7 +26,7 @@ Route::delete('/users/{user}', 'UserController@destroy')->name('users.destroy');
 Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 //us.4
-
+Route::put('/me/profile', 'ResetPasswordController@resetpassword')->name('profile.update');
 //US.5
 Route::get('/users', 'UserController@index')->name('users.list');
 
@@ -82,13 +82,14 @@ Route::put('/movement/{movement}', 'MovementsController@update')->name('movement
 Route::delete('/movement/{movement}', 'MovementsController@movementDelete')->name('movement.delete');
 
 //US.23
-Route::post('/documents/{movement}', 'MovementsController@documentsMovement')->name('documents.movement');
+Route::get('/document/{movement}','MovementsController@showFormDocument')->name('documents.form');
+Route::post('/document/{movement}', 'DocumentsController@documentStore')->name('documents.movement');
 
 //US.24
 Route::delete('/document/{document}', 'MovementsController@documentDelete')->name('document.delete');
 
 //US.25
-Route::get('/document/{document}', 'MovementsController@documentGet')->name('document.get');
+Route::get('/document/{document}', 'DocumentsController@documentGet')->name('document.get');
 
 //US.26
 Route::get('/dashboard/{user}', 'UserController@dashboard')->name('dashboard');

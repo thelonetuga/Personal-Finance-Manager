@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Associate;
 use Carbon\Carbon;
 use DB;
-use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 
 

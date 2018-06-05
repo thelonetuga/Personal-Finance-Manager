@@ -29,6 +29,7 @@
         </tr>
     </thead>
     <tbody>
+
     @foreach ($movements as $movement)
 
         <tr>
@@ -40,12 +41,18 @@
             <td>{{ $movement->end_balance }}</td>
             <td>
                 <a class="btn btn-xs btn-primary" href="{{route('movement.edit',$movement)}}">Edit</a>
+
                 <form action="{{ action('MovementsController@movementDelete', $movement->id) }}" method="POST" role="form" class="inline">
                     @csrf
                     @method('delete')
                     <input type="hidden" name="account_id" value="{{ intval($movement->movement_id) }}">
                     <button type="submit" class="btn btn-xs btn-danger">Delete </button>
                 </form>
+                @isset($movement->document_id)
+                    <a class="btn btn-xs btn-info" href="{{ action('DocumentsController@documentGet', $movement->document_id) }}" role="button">Download Document</a>
+                @else
+                    <a class="btn btn-xs btn-warning" href="{{route('documents.form',$movement->id)}}" role="button">Upload Document</a>
+                @endisset
             </td>
         </tr>
     @endforeach

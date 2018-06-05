@@ -236,9 +236,7 @@ class UserController extends Controller
         $file = $data['profile_photo'] ?? null;
 
         if ($file != null) {
-
             $file_name = basename($file->store('profiles', 'public'));
-
             $user->update(['profile_photo' => $file_name]);
         }
 
