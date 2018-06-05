@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\associate;
+use App\Associate;
+use Carbon\Carbon;
 use DB;
+use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -41,18 +43,23 @@ class AssociatesController extends Controller
 
     public function associateOfDelete()
     {
+
         DB::table ('associate_members') ->where('associated_user_id', '=', Auth::id())->delete();
 
-        return redirect()
-            ->route('profiles')
-            ->with('success', 'Associate deleted successfully');
+        return redirect()->route('profiles')->with('success', 'Associate deleted successfully');
     }
 
     public function associatesPost()
     {
-        DB::table('associate_members')->insert(
-            ['main_user_id' => intval('add_user'), 'associated_user_id' => Auth::id()]
-        );
+        $main = Auth::user();
+
+        $associate = new Associate([
+            'main_user_id' => $main->id,
+            'associated_user_id' =>  request()->get('add_user'),
+            'created_at' => Carbon::now()
+        ]);
+        $associate->save();
+        return redirect()->back();
     }
 
 }

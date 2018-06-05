@@ -47,8 +47,6 @@ class Account extends Model
             case 5:
                 return  DB::table ('account_types')->where('id','=', 5 )->value('name');
         }
-
-
         return 'Unknown';
     }
 

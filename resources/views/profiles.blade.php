@@ -52,7 +52,7 @@
                         @endforeach
                         </td>
                         <td>
-                            <form action="{{ route('associates.post') }}" method="POST" role="form" class="inline">
+                            <form action="{{ route('associates.post' ) }}" method="POST" role="form" class="inline">
                                 @csrf
                                 <input type="hidden" name="add_user" value="{{ $user->id }}">
                                 <button type="submit" class="btn btn-xs btn-success">Add_user</button>

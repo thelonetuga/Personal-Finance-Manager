@@ -11,7 +11,7 @@ class Associate extends Model
     use Notifiable;
     use SoftDeletes;
     public $timestamps = false;
-
+    protected $table = 'associate_members';
     /**
     * The attributes that are mass assignable.
     *
@@ -20,7 +20,7 @@ class Associate extends Model
 
 
     protected $fillable = [
-        'main_user_id, associated_user_id, created_at',
+        'main_user_id', 'associated_user_id', 'created_at',
     ];
 
     public function associate(){
