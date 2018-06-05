@@ -20,6 +20,7 @@
     <table class="table table-striped" style="background: #cce5ff">
     <thead>
         <tr>
+            <th>id</th>
             <th>Type</th>
             <th>Category</th>
             <th>Date</th>
@@ -33,6 +34,7 @@
     @foreach ($movements as $movement)
 
         <tr>
+            <td>{{ $movement->id }}</td>
             <td>{{ $movement->type }}</td>
             <td>{{ $movement->typeToStr() }}</td>
             <td>{{ $movement->date }}</td>
@@ -50,6 +52,12 @@
                 </form>
                 @isset($movement->document_id)
                     <a class="btn btn-xs btn-info" href="{{ action('DocumentsController@documentGet', $movement->document_id) }}" role="button">Download Document</a>
+                <br>
+                    <form action="{{ action('DocumentsController@documentDelete', $movement->document_id) }}" method="POST" role="form" class="inline">
+                        @csrf
+                        @method('delete')
+                        <button type="submit" class="btn btn-xs btn-danger">Delete Document </button>
+                    </form>
                 @else
                     <a class="btn btn-xs btn-warning" href="{{route('documents.form',$movement->id)}}" role="button">Upload Document</a>
                 @endisset

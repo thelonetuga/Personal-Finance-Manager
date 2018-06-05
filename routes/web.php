@@ -82,11 +82,11 @@ Route::put('/movement/{movement}', 'MovementsController@update')->name('movement
 Route::delete('/movement/{movement}', 'MovementsController@movementDelete')->name('movement.delete');
 
 //US.23
-Route::get('/document/{movement}','MovementsController@showFormDocument')->name('documents.form');
-Route::post('/document/{movement}', 'DocumentsController@documentStore')->name('documents.movement');
+Route::get('/documents/{movement}','MovementsController@showFormDocument')->name('documents.form');
+Route::post('/documents/{movement}', 'DocumentsController@documentStore')->name('documents.movement');
 
 //US.24
-Route::delete('/document/{document}', 'MovementsController@documentDelete')->name('document.delete');
+Route::delete('/document/{document}', 'DocumentsController@documentDelete')->name('document.delete');
 
 //US.25
 Route::get('/document/{document}', 'DocumentsController@documentGet')->name('document.get');

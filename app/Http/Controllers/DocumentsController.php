@@ -6,6 +6,7 @@ use App\Document;
 use App\Movement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentsController extends Controller
@@ -53,13 +54,23 @@ class DocumentsController extends Controller
 
     }
 
-    public function documentGet($document)
+    public function documentGet($id)
     {
-
-        $movement = Movement::where('document_id', $document->id)->get();
+        $document =  Document::findOrFail($id);
+        $movement = Movement::where('document_id', $document->id)->first();
 
         $path = storage_path('app/documents/'.$movement->account_id.'/'.$movement->id. '.' .$document->type);
         return response()->download($path,$document->original_name);
+    }
+
+    public function documentDelete($id)
+    {
+        $delete = Document::find($id);
+        Storage::delete('documents/'.$delete->id); //delete from storage
+        //$delete->delete(); //delete from DB
+        DB::table ('documents') ->where('id', '=', $delete->id)->delete();
+
+        return redirect()->back();
     }
 
 }

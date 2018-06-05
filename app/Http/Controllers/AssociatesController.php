@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Associate;
 use Carbon\Carbon;
-use DB;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 class AssociatesController extends Controller

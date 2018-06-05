@@ -123,11 +123,13 @@ class MovementsController extends Controller
             ->with('success', 'Movement saved successfully');
     }
 
-    public function showFormDocument ($movement)
+    public function showFormDocument ()
     {
-        $mov = Movement::findOrFail($movement);
+        $id = request()->route('movement');
+        $movement = Movement::findOrFail($id);
 
-        return view('movements.add-documents', compact('mov'));
+
+        return view('movements.add-documents', compact('movement'));
     }
 
 }
