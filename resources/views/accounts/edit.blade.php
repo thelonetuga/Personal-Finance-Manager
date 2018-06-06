@@ -13,7 +13,8 @@
             @include('accounts.partials.add-edit')
             <div class="form-group">
                 <button type="submit" class="btn btn-success" name="ok">Save</button>
-                <a type="button" class="btn btn-warning" name="cancel" href="{{ route('accounts.users', Auth::id())}}">Cancel</a>
+                <a type="button" class="btn btn-warning" name="cancel"
+                   href="{{ route('dashboard', Auth::user()->id)}}">Cancel</a>
             </div>
         </form>
     </div>

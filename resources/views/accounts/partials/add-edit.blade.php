@@ -33,3 +33,11 @@
         <em>{{ $errors->first('start_balance') }}</em>
     @endif
 </div>
+<div class="form-group">
+    <label for="description">Description</label>
+    <br>
+    <textarea rows="2" cols="156" name="description" id="description" placeholder="Enter text here..."></textarea>
+    @if ($errors->has('description'))
+        <em>{{ $errors->first('description') }}</em>
+    @endif
+</div>

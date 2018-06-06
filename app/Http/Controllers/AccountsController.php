@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Account;
+use App\Movement;
 use Carbon\Carbon;
 use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\Rule;
+use Laravel\Tinker\ClassAliasAutoloader;
 
 //$aux = \App\User::id();
 
@@ -35,12 +37,12 @@ class AccountsController extends Controller
      */
     public function accountsUser($id)
     {
-        if (Auth::user()->id == $id){
+        if (Auth::user()->id == $id) {
             $user_id = Account::where('owner_id', '=', auth()->user()->id)->value('owner_id');
             $accounts = Account::withTrashed()->where('owner_id', '=', $id)->get();
             $pagetitle = "List of Accounts";
             return view('accounts.list', compact('accounts', 'user_id', 'pagetitle'));
-        }else {
+        } else {
             return Response::make(view('accounts.list'), 403);
         }
 
@@ -82,28 +84,31 @@ class AccountsController extends Controller
         if ($request->has('cancel')) {
             return redirect()->route('dashboard');
         }
-        $account = $request->validate([
+
+        $data = $request->validate([
             'account_type_id' => 'required|exists:account_types,id',
-            'date' => 'nullable|date',
-            'code' => 'required', 'string', Rule::unique('accounts')->where(function ($query) {
+            'code' => ['required', 'string', Rule::unique('accounts')->where(function ($query) {
                 return $query->where('owner_id', Auth::user()->id);
-            }),
+            }) ],
             'start_balance' => 'required|numeric',
-            'description' => 'nullable|string|max:200',
+            'description' => 'nullable|string',
+            'date' => 'nullable|date',
         ]);
-        if (empty($account['date'])){
-            $account['date'] = date("Y-m-d");
-        }else{
-            $account['date'] = date("Y-m-d", strtotime($account['date']));
-        }
+        //falta formatar a data mo formato Y,M,D
 
-        $account['current_balance'] = $account['start_balance'];
-        $account['owner_id'] = Auth::user()->id;
-        $account['created_at'] = date("Y-m-d H:i:s");
+        $accounts = Account::create([
+            'owner_id' => Auth::id(),
+            'account_type_id' => $data['account_type_id'],
+            'code' => $data['code'],
+            'start_balance' => $data['start_balance'],
+            'description' => $data['description'] ?? null,
+            'date' => $data['date'] ?? Carbon::now(),
+            'current_balance' => $data['start_balance'],
+            'created_at' => Carbon::now(),
+        ]);
 
-
-        Account::create($account);
-        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        $accounts->save();
+        return redirect()->route('dashboard', Auth::user()->id )->with('success', 'Account created successfully!');
     }
 
     /**
@@ -118,16 +123,43 @@ class AccountsController extends Controller
         if ($request->has('cancel')) {
             return redirect()->action('AccountsController@accountsUser');
         }
+        $account = Account::withTrashed()->findOrFail($id);
+        $movements = Movement::where('account_id', $account->id)->get();
+        $numM  = $movements->count();
+        $regex = [
+            'account_type_id' => 'required|exists:account_types,id',
+            'start_balance' => 'required|numeric',
+            'description' => 'nullable|string',
+            'date' => 'nullable|date',
+            'code' => ['required', 'string', Rule::unique('accounts')->where(function ($query) {
+                return $query->where('owner_id', Auth::user()->id);
+            }) ],
+        ];
 
-        $accountModel = $request->validate([
-            'account_type_id' => 'required',
-            'date' => 'required',
-            'code' => 'required',
-            'start_balance' => 'required',
-            'description',
-        ], [ // Custom Messages
-        ]);
-        $account = Account::findOrFail($id);
+        if ($request['code'] != $account->code) {
+                $regex['code'] = ['required', 'string', Rule::unique('accounts')->where(function ($query) {
+                    return $query->where('owner_id', Auth::user()->id);
+                }),
+            ];
+        }
+
+        $accountModel = $request->validate($regex);
+        if ($accountModel['start_balance'] != $account->startbalance){
+            if ($numM == 0){
+                $account['current_balance'] = $account['start_balance'];
+            }else{
+                $calc = $accountModel['start_balance'] - $account->start_balance;
+                $accountModel['current_balance'] = $account->current_balance + $calc;
+
+                for ($i = 0; $i <$numM; $i++){
+                    $movement = $movements->get($i);
+                    $movement->start_balance +=$calc;
+                    $movement->end_balance += $calc;
+                    $movement->save();
+                }
+            }
+        }
+
         $account->fill($accountModel);
         $account->save();
 
@@ -168,14 +200,14 @@ class AccountsController extends Controller
     {
         $account = Account::onlyTrashed()->findOrFail($id);
         $user_id = Account::where('owner_id', Auth::id())->value('owner_id');
-        if ($account){
+        if ($account) {
             if (auth()->user()->can('account_edit', $account->owner_id)) {
                 $account->restore();
                 return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
             } else {
                 return Response::make(view('accounts.list'), 403);
             }
-        }else{
+        } else {
             return Response::make(view('dashboard'), 404);
         }
 

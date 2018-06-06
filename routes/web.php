@@ -64,8 +64,8 @@ Route::patch('/account/{account}/close', 'AccountsController@accountClose')->nam
 Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('auth');
 
 //US.17
-Route::get('/account', 'AccountsController@create')->name('account.create');
-Route::post('/account', 'AccountsController@store')->name('account.store');
+Route::get('/account', 'AccountsController@create')->name('account.create')->middleware('auth');
+Route::post('/account', 'AccountsController@store')->name('account.store')->middleware('auth');
 
 //US.18
 Route::get('/account/{account}', 'AccountsController@edit')->name('account.edit');

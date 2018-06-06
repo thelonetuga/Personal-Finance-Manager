@@ -17,6 +17,11 @@ class Document extends Model
     protected $fillable = [
         'type','original_name', 'description','created_at'
     ];
+
+
+    public function document(){
+        return $this->hasOne('App\Movements', 'document_id', 'id');
+    }
 }
 
 

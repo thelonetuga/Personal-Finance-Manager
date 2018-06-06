@@ -1,7 +1,3 @@
-@php
-    $movements = App\Movement::where('account_id', '=', Auth::id() )->count();
-@endphp
-
 @extends('layouts.navBar')
 
 @section('title', 'List accounts')
@@ -23,7 +19,6 @@
             <th>Start balance</th>
             <th>Description</th>
             <th>Account Type</th>
-            <th>Number of Movements</th>
         </tr>
     </thead>
     <tbody>
@@ -35,7 +30,6 @@
             <td>{{ $account->start_balance }}</td>
             <td>{{ $account->description }}</td>
             <td>{{ $account->typeToStr() }}</td>
-            <td>{{ $movements }}</td>
             <td>
                 <a class="btn btn-xs btn-primary" href="{{route('account.edit',$account->id)}}">Edit</a>
                 <a class="btn btn-xs btn-success" href="{{route('movements.account', $account->id)}}">Movements</a>

@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\User;
-use Hash;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -265,7 +265,7 @@ class UserController extends Controller
         if (Auth::id() == $user->id ) {
             abort(403);
         }
-        if ($user->blocked == 1 && $user->id === $id) {
+        if ($user->blocked == 1 && $user->id == $id) {
             return redirect()->route('users.list')->with('User is already Blocked!');
         }
         $user->blocked = 1;
@@ -279,7 +279,7 @@ class UserController extends Controller
         if (Auth::id() == $user->id) {
             abort(403);
         }
-        if ($user->blocked == 0 && $user->id === $id && $user->admin == 1) {
+        if ($user->blocked == 0 && $user->id == $id && $user->admin == 1) {
             return redirect()->route('users.list')->with('User is already Unblocked!');
         }
         $user->blocked = 0;
@@ -293,7 +293,7 @@ class UserController extends Controller
         if (Auth::id() == $user->id) {
             abort(403);
         }
-        if ($user->admin == 1 && $user->id === $id) {
+        if ($user->admin == 1 && $user->id == $id) {
             return redirect()->route('users.list')->with('User is already an Administrator!');
         }
         $user->admin = 1;
@@ -308,7 +308,7 @@ class UserController extends Controller
         if (Auth::id() == $user->id) {
             abort(403);
         }
-        if ($user->admin == 0 && $user->id === $id) {
+        if ($user->admin == 0 && $user->id == $id) {
             return redirect()->route('users.list')->with('User is already a Client!');
         }
         $user->admin = 0;
