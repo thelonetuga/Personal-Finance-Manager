@@ -95,7 +95,7 @@ Route::get('/document/{document}', 'DocumentsController@documentGet')->name('doc
 Route::get('/dashboard/{user}', 'UserController@dashboard')->name('dashboard');
 
 //US.29
-Route::post('/me/associates', 'AssociatesController@associatesPost')->name('associates.post');
+Route::post('/me/associates', 'AssociatesController@associatesPost')->name('associates.post')->middleware('auth');
 
 //US.30
 Route::delete('/me/associates/{user}', 'AssociatesController@associateOfDelete')->name('associates.delete');

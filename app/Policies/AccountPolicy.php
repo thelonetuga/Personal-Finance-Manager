@@ -47,7 +47,7 @@ class AccountPolicy
 
     /**
      * Determine whether the user can delete the account.
-     *
+     *auth
      * @param  \App\User  $user
      * @param  \App\Account  $account
      * @return mixed

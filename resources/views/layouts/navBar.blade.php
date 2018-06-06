@@ -21,7 +21,7 @@
             </div>
             <ul class="nav navbar-nav">
                 @auth
-                    @if((Auth::user()->admin) === 1)
+                    @if((Auth::user()->admin) == 1)
                         <li><a href="{{ route('users.list') }}"> List of Users </a></li>
                     @endif
                     <li><a href="{{route('about')}}">About</a></li>

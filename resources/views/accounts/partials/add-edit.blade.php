@@ -21,7 +21,7 @@
 </div>
 <div class="form-group">
     <label for="date">Code</label>
-    <input type="text" class="form-control" name="date" id="date" placeholder="Code" value="{{ old('code', $account->code ) }}"/>
+    <input type="text" class="form-control" name="code" id="code" placeholder="Code" value="{{ old('code', $account->code ) }}"/>
     @if ($errors->has('code'))
         <em>{{ $errors->first('code') }}</em>
     @endif

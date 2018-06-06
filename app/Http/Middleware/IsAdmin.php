@@ -19,8 +19,6 @@ class IsAdmin
         if ($request->user() && $request->user()->admin == 1) {
              return $next($request);
         }
-
        return Response::make(view('home'),403);
-
     }
 }

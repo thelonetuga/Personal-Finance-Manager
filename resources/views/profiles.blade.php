@@ -26,10 +26,10 @@
                 @foreach ($users as $user)
                     <tr>
                         <td>
-                            @if($user->profile_photo == null)
+                            @if(empty($user->profile_photo))
                                 <img src="img/avatars/default.png" style="width:50px; height:50px; float:left; border-radius:50%; margin-left:150px; alt:'';">
                             @else
-                                <img src="storage/profiles/{{$user->profile_photo}}" style="width:50px; height:50px; float:left; border-radius:50%; margin-left:150px; alt:'';">
+                                <img src="{{asset('storage/profiles/'.$user->profile_photo)}}" style="width:50px; height:50px; float:left; border-radius:50%; margin-left:150px; alt:'';">
                             @endif
                         </td>
                         <td>{{ $user->name }}</td>
@@ -42,24 +42,27 @@
                         @foreach($associates_of as $associateOf)
                             @if ($user->id == $associateOf->main_user_id )
                                     <span>associate-of</span>
+                                    @if(Auth::user()->id != $user->id )
                                     <form action="{{ action('AssociatesController@associateOfDelete', $user) }}" method="POST" role="form" class="inline">
                                         @csrf
                                         @method('delete')
                                         <input type="hidden" name="associate_id" value="{{ $user->id }}">
                                         <button type="submit" class="btn btn-xs btn-danger">Delete</button>
                                     </form>
+                                    @endif
                             @endif
                         @endforeach
                         </td>
                         <td>
+                        @if(Auth::user()->id != $user->id )
                             <form action="{{ route('associates.post' ) }}" method="POST" role="form" class="inline">
                                 @csrf
                                 <input type="hidden" name="add_user" value="{{ $user->id }}">
-                                <button type="submit" class="btn btn-xs btn-success">Add_user</button>
+                                <button type="submit" class="btn btn-xs btn-success">Add_Associate</button>
                             </form>
+                        @endif
                         </td>
                     </tr>
-
                 @endforeach
             </tbody>
         </table>

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class IsOwner
 {
@@ -15,8 +16,8 @@ class IsOwner
      */
     public function handle($request, Closure $next)
     {
-        $user_id = Account::where('owner_id', '=', auth()->user()->id)->value('owner_id');
-        if ($request->account()->user->id == $user_id) {
+        $user_id = Account::where('owner_id', Auth::id())->value('owner_id');
+        if (auth()->user()->id == $user_id) {
             return $next($request);
         }
 

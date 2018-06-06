@@ -65,4 +65,19 @@ class User extends Authenticatable
         }
     }
 
+    public function associateIs($id){
+       $user = User::findOrFail($id);
+       return $this->associateOf->contains($user);
+    }
+
+    public function associateOf(){
+        return  $this->belongsToMany('App\User', 'associated_members', 'associated_user_id', 'main_user_id');
+    }
+
+    public function associate(){
+        return  $this->belongsToMany('App\User', 'associated_members', 'associated_user_id', 'main_user_id');
+    }
+
+
+
 }
