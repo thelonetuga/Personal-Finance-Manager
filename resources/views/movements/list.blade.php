@@ -20,7 +20,6 @@
     <table class="table table-striped" style="background: #cce5ff">
     <thead>
         <tr>
-            <th>id</th>
             <th>Type</th>
             <th>Category</th>
             <th>Date</th>
@@ -32,15 +31,18 @@
     <tbody>
 
     @foreach ($movements as $movement)
-
         <tr>
-            <td>{{ $movement->id }}</td>
-            <td>{{ $movement->type }}</td>
+            @if($movement->movement_category_id <'12')
+                <td>{{ $movement->type ='expense' }}</td>
+            @else
+                <td>{{ $movement->type ='revenue' }}</td>
+            @endif
             <td>{{ $movement->typeToStr() }}</td>
             <td>{{ $movement->date }}</td>
             <td>{{ $movement->value }}</td>
             <td>{{ $movement->start_balance }}</td>
             <td>{{ $movement->end_balance }}</td>
+
             <td>
                 <a class="btn btn-xs btn-primary" href="{{route('movement.edit',$movement)}}">Edit</a>
 

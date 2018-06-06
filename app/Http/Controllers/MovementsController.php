@@ -33,7 +33,7 @@ class MovementsController extends Controller
     public function movementsAccount()
     {
             $account = request()->route('account');
-            $movements = Movement::where('account_id', '=',$account)->orderby('date', 'desc')->get();
+            $movements = Movement::where('account_id', '=',$account)->orderby('date', 'asc')->get();
             $pagetitle = "List of Movements";
             return view('movements.list', compact('movements', 'account', 'pagetitle'));
     }
@@ -69,7 +69,7 @@ class MovementsController extends Controller
         $data =$request-> validate([
             'movement_category_id' => 'required|integer|between:1,18',
             'date' => 'date_format:"Y/m/d"|required',
-            'value' => 'required|numeric|between:-9999.99,9999.99',
+            'value' => 'required|numeric|between:-99999.99,999999.99',
             'description'=>'string|nullable',
             'document_file'=> 'file|mimes:pdf,jpeg, PNG',
             'documentDescription'=> 'string|nullable'
@@ -77,9 +77,14 @@ class MovementsController extends Controller
         $movement = new Movement;
         $movement->fill($data);
         $movement->account_id = $account;
+        $movement->start_balance='0';
+        $movement->end_balance='0';
         $movement->movement_category_id = $request->input('movement_category_id');
-        $movement->end_balance = '0';
-        $movement->start_balance= '0';
+        $movement->value = $data['value'];
+        if($movement->movement_category_id <'12')
+            $movement->type ='expense';
+        else
+            $movement->type ='revenue';
         $movement->description = $data['description'];
         $movement->created_at = Carbon::now();
 
@@ -127,7 +132,6 @@ class MovementsController extends Controller
     {
         $id = request()->route('movement');
         $movement = Movement::findOrFail($id);
-
 
         return view('movements.add-documents', compact('movement'));
     }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
 use App\Document;
 use App\Movement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -65,12 +67,27 @@ class DocumentsController extends Controller
 
     public function documentDelete($id)
     {
-        $delete = Document::find($id);
-        Storage::delete('documents/'.$delete->id); //delete from storage
-        //$delete->delete(); //delete from DB
-        DB::table ('documents') ->where('id', '=', $delete->id)->delete();
+        $document = Document::findOrFail($id);
+        $movement = $document->document;
+        $accountId = $movement->account_id;
+        $account = Account::findOrFail($accountId);
+        if(Auth::user()->id == $account->owner_id){
+            if ($document->id != null)
+            {
 
-        return redirect()->back();
+                $movement->document_id =null;
+                $movement->update();
+
+                $document->delete();
+
+                Storage::disk('local')->delete('documents/' . $movement->account_id . '/' . $movement->id . '.' . $document->type);
+
+            }
+
+            return redirect()->route('home')
+                ->with('success', 'Document deleted successfully');
+        } else
+            abort(403);
     }
 
 }

@@ -5,9 +5,12 @@ namespace App;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
 {
+
+
     public $timestamps = false;
     /**
      * The attributes that are mass assignable.
@@ -20,7 +23,7 @@ class Document extends Model
 
 
     public function document(){
-        return $this->hasOne('App\Movements', 'document_id', 'id');
+        return $this->hasOne('App\Movement', 'document_id', 'id');
     }
 }
 

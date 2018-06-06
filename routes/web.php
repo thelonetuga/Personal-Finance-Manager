@@ -72,7 +72,7 @@ Route::get('/account/{account}', 'AccountsController@edit')->name('account.edit'
 Route::put('/account/{account}', 'AccountsController@update')->name('account.update');
 
 //US.20 
-Route::get('/movements/{account}', 'MovementsController@movementsAccount')->name('movements.account');
+Route::get('/movements/{account}', 'MovementsController@movementsAccount')->name('movements.account')->middleware('auth')->middleware('isOwner');
 
 //US.21 
 Route::get('/movements/{account}/create', 'MovementsController@movementCreate')->name('movement.create');
@@ -86,7 +86,7 @@ Route::get('/documents/{movement}','MovementsController@showFormDocument')->name
 Route::post('/documents/{movement}', 'DocumentsController@documentStore')->name('documents.movement');
 
 //US.24
-Route::delete('/document/{document}', 'DocumentsController@documentDelete')->name('document.delete');
+Route::delete('/document/{document}', 'DocumentsController@documentDelete')->name('document.delete')->middleware('auth');
 
 //US.25
 Route::get('/document/{document}', 'DocumentsController@documentGet')->name('document.get');

@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Account;
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class IsOwner
 {
