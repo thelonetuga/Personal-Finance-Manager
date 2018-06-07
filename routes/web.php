@@ -72,11 +72,11 @@ Route::get('/account/{account}', 'AccountsController@edit')->name('account.edit'
 Route::put('/account/{account}', 'AccountsController@update')->name('account.update')->middleware('isOwner');
 
 //US.20 
-Route::get('/movements/{account}', 'MovementsController@movementsAccount')->name('movements.account')->middleware('isOwner');
+Route::get('/movements/{account}', 'MovementsController@movementsAccount')->name('movements.account');
 
 //US.21 
-Route::get('/movements/{account}/create', 'MovementsController@movementCreate')->name('movement.create')->middleware('isOwner');
-Route::post('/movements/{account}/create', 'MovementsController@movementStore')->name('movement.store')->middleware('isOwner');
+Route::get('/movements/{account}/create', 'MovementsController@movementCreate')->name('movement.create');
+Route::post('/movements/{account}/create', 'MovementsController@movementStore')->name('movement.store');
 Route::get('/movement/{movement}', 'MovementsController@edit')->name('movement.edit')->middleware('canMovement');
 Route::put('/movement/{movement}', 'MovementsController@update')->name('movement.update')->middleware('canMovement');
 Route::delete('/movement/{movement}', 'MovementsController@movementDelete')->name('movement.delete')->middleware('canMovement');

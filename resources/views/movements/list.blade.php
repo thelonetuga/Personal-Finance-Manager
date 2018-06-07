@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container">
-        <a class="btn btn-xs btn-success" href="{{route('movement.create', $account->id)}}">Add new movement</a>
+        <a class="btn btn-xs btn-success" href="{{route('movement.create', $account)}}">Add new movement</a>
         <br>
         <br>
         @if (count($movements))
@@ -18,6 +18,7 @@
             <table class="table table-striped" style="background: #cce5ff">
                 <thead>
                 <tr>
+                    <th>Id</th>
                     <th>Type</th>
                     <th>Category</th>
                     <th>Date</th>
@@ -29,6 +30,7 @@
                 <tbody>
                 @foreach ($movements as $movement)
                     <tr>
+                        <td>{{ $movement->id }}</td>
                         @if($movement->movement_category_id <'12')
                             <td>{{ $movement->type ='expense' }}</td>
                         @else

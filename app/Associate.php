@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notifiable;
 class Associate extends Model
 {
     use Notifiable;
-    use SoftDeletes;
     public $timestamps = false;
     protected $table = 'associate_members';
     /**
@@ -18,6 +17,8 @@ class Associate extends Model
     * @var array
     */
 
+    protected $primaryKey = ['main_user_id', 'associated_user_id'];
+    public $incrementing = false;
 
     protected $fillable = [
         'main_user_id', 'associated_user_id', 'created_at',

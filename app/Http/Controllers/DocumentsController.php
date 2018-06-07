@@ -54,7 +54,6 @@ class DocumentsController extends Controller
         }
         return redirect()->route('movements.account', $movement->account_id)
             ->with('success', 'Document add successfully');
-
     }
 
     public function documentGet($id)
