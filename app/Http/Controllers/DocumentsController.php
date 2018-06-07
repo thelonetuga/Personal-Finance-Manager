@@ -75,16 +75,11 @@ class DocumentsController extends Controller
         if(Auth::user()->id == $account->owner_id){
             if ($document->id != null)
             {
-
                 $movement->document_id =null;
                 $movement->update();
-
                 $document->delete();
-
                 Storage::disk('local')->delete('documents/' . $movement->account_id . '/' . $movement->id . '.' . $document->type);
-
             }
-
             return redirect()->route('home')
                 ->with('success', 'Document deleted successfully');
         } else{

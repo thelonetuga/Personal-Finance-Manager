@@ -86,6 +86,9 @@ class MovementsController extends Controller
         $movement = new Movement;
         $movement->fill($data);
         $movement->account_id = $account;
+
+
+
         $movement->start_balance='0';
         $movement->end_balance='0';
         $movement->movement_category_id = $request->input('movement_category_id');
@@ -96,6 +99,9 @@ class MovementsController extends Controller
             $movement->type ='revenue';
         $movement->description = $data['description'];
         $movement->created_at = Carbon::now();
+
+        $movements_atualizar = where(['date' <= $movement->date],['created_at' < $movement->created_at])->get();
+
 
         $movement->save();
 

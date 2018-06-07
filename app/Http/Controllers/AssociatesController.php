@@ -45,8 +45,15 @@ class AssociatesController extends Controller
 
     public function associateOfDelete()
     {
-
-        DB::table('associate_members')->where('associated_user_id', '=', Auth::id())->delete();
+        $id = request()->route('user');
+        $users=DB::table('associate_members')->where('associated_user_id', '=', Auth::id())->get();
+        foreach($users as $user)
+        {
+            if($user->main_user_id == $id){
+                $find = Associate::findOrfail($id);
+                $find->delete();
+            }
+        }
         return redirect()->route('profiles')->with('success', 'Associate deleted successfully');
     }
 
