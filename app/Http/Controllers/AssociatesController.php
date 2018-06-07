@@ -54,7 +54,8 @@ class AssociatesController extends Controller
     {
         $main = Auth::user();
         $pedido = request()->get('add');
-
+        $encontrado = User::findOrFail($pedido);
+        if ( !is_null($encontrado)) {
             if ($pedido != $main->id) {
                 $associate = new Associate([
                     'main_user_id' => $main->id,
@@ -63,9 +64,10 @@ class AssociatesController extends Controller
                 ]);
                 $associate->save();
                 return redirect()->back();
-            }else{
-                return Response::make(view('home'), 403);
             }
+            return Response::make(view('home'), 403);
+        }
+        return Response::make(view('dashboard'), 404);
     }
 
 }
