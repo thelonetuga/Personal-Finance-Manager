@@ -37,13 +37,13 @@ class MovementsController extends Controller
         $id = request()->route('account');
         $account = Account::findOrFail($id);
         $user = User::findOrFail($account->owner_id);
-       // if (Auth::id() == $account->owner_id) {
+        if (Auth::id() == $account->owner_id) {
             $movements = Movement::where('account_id', '=', $id)->orderby('date', 'desc')->get();
             $pagetitle = "List of Movements";
             return view('movements.list', compact('movements', 'account', 'pagetitle'));
-//        } else {
-//            return Response::make(view('home'), 403);
-//        }
+        } else {
+            return Response::make(view('home'), 403);
+       }
 
     }
 
@@ -186,8 +186,7 @@ class MovementsController extends Controller
         $movement->save();
 
         return redirect()
-            ->route('movements.account')
-            ->with('success', 'Movement saved successfully');
+            ->route('movements.account');
     }
 
     public function showFormDocument()

@@ -52,8 +52,7 @@ class DocumentsController extends Controller
             $movement->save();
             Storage::putFileAs('documents/' . $movement->account_id, $request->file('document_file'), $movement->id . '.' . $document['type']);
         }
-        return redirect()->route('movements.account', $movement->account_id)
-            ->with('success', 'Document add successfully');
+        return redirect()->route('movements.account', $movement->account_id);
     }
 
     public function documentGet($id)
@@ -72,15 +71,13 @@ class DocumentsController extends Controller
         $accountId = $movement->account_id;
         $account = Account::findOrFail($accountId);
         if(Auth::user()->id == $account->owner_id){
-            if ($document->id != null)
-            {
+            if ($document->id != null){
                 $movement->document_id =null;
                 $movement->update();
                 $document->delete();
                 Storage::disk('local')->delete('documents/' . $movement->account_id . '/' . $movement->id . '.' . $document->type);
             }
-            return redirect()->route('home')
-                ->with('success', 'Document deleted successfully');
+            return Response::make(view('homeaccounts.list'), 404);
         } else{
             return Response::make(view('accounts.list'), 403);
         }

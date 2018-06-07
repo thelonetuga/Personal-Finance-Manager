@@ -31,10 +31,10 @@ Route::put('/me/profile', 'ResetPasswordController@resetpassword')->name('profil
 Route::get('/users', 'UserController@index')->name('users.list');
 
 //US.7
-Route::patch('/users/{user}/block', 'UserController@blockUser')->name('users.blocked')->middleware('auth','admin');
-Route::patch('/users/{user}/unblock', 'UserController@unBlockUser')->name('users.unblock')->middleware('auth','admin');
-Route::patch('/users/{user}/promote', 'UserController@promoteUser')->name('users.promote')->middleware('auth','admin');
-Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.demote')->middleware('auth','admin');
+Route::patch('/users/{user}/block', 'UserController@blockUser')->name('users.blocked')->middleware('auth');
+Route::patch('/users/{user}/unblock', 'UserController@unBlockUser')->name('users.unblock')->middleware('auth');
+Route::patch('/users/{user}/promote', 'UserController@promoteUser')->name('users.promote')->middleware('auth');
+Route::patch('/users/{user}/demote', 'UserController@demoteUser')->name('users.demote')->middleware('auth');
 
 //US.9
 Route::get('/me/password','Auth\ChangePasswordController@showForm')->name('passwordchange.form');
@@ -61,7 +61,7 @@ Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('a
 Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close')->middleware('isOwner');
 
 //US.16
-Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen');
+Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('isOwner');
 
 //US.17
 Route::get('/account', 'AccountsController@create')->name('account.create')->middleware('auth');
