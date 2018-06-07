@@ -14,7 +14,7 @@
 </div>
 <div class="form-group">
     <label for="date">Date</label>
-    <input type="text" class="form-control" name="date" id="date" placeholder="Data de Criacao" value="{{ old('date', $account->created_at ) }}"/>
+    <input type="text" class="form-control" name="date" id="date" placeholder="Data de Criacao" />
     @if ($errors->has('date'))
         <em>{{ $errors->first('date') }}</em>
     @endif

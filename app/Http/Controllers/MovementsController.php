@@ -7,9 +7,11 @@ use App\Http\Requests\StoreMovementRequest;
 use App\Http\Requests\UpdateMovementRequest;
 use App\Movement;
 use App\Document;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 class MovementsController extends Controller
@@ -32,10 +34,17 @@ class MovementsController extends Controller
      */
     public function movementsAccount()
     {
-            $account = request()->route('account');
-            $movements = Movement::where('account_id', '=',$account)->orderby('date', 'asc')->get();
-            $pagetitle = "List of Movements";
-            return view('movements.list', compact('movements', 'account', 'pagetitle'));
+            $id = request()->route('account');
+            $account = Account::findOrFail($id);
+            $user = User::findOrFail($account->owner_id);
+            if (Auth::id() == $account->owner_id){
+                $movements = Movement::where('account_id', '=',$id)->orderby('date', 'asc')->get();
+                $pagetitle = "List of Movements";
+                return view('movements.list', compact('movements', 'account', 'pagetitle'));
+            }else{
+                return Response::make(view('home'), 403);
+            }
+
     }
 
     public function movementCreate()

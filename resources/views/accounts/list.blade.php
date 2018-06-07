@@ -39,7 +39,6 @@
                     <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
                     <button type="submit" class="btn btn-xs btn-danger">Delete </button>
                 </form>
-                @can('account_add', auth()->user()->id)
                     @if($account->trashed())
                             <form action="{{ action('AccountsController@accountReopen', $account->id) }}" method="POST" role="form" class="inline">
                                 @csrf
@@ -55,7 +54,6 @@
                             <button type="submit" class="btn btn-xs btn-warning">Close </button>
                         </form>
                     @endif
-                 @endcan
             </td>
         </tr>
     @endforeach

@@ -43,7 +43,7 @@ class AccountsController extends Controller
             $pagetitle = "List of Accounts";
             return view('accounts.list', compact('accounts', 'user_id', 'pagetitle'));
         } else {
-            return Response::make(view('accounts.list'), 403);
+            return Response::make(view('home'), 403);
         }
 
     }
@@ -89,14 +89,14 @@ class AccountsController extends Controller
             'account_type_id' => 'required|exists:account_types,id',
             'code' => ['required', 'string', Rule::unique('accounts')->where(function ($query) {
                 return $query->where('owner_id', Auth::user()->id);
-            }) ],
+            })],
             'start_balance' => 'required|numeric',
             'description' => 'nullable|string',
             'date' => 'nullable|date',
         ]);
         //falta formatar a data mo formato Y,M,D
 
-        $accounts = Account::create([
+        $account = Account::create([
             'owner_id' => Auth::id(),
             'account_type_id' => $data['account_type_id'],
             'code' => $data['code'],
@@ -107,8 +107,8 @@ class AccountsController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        $accounts->save();
-        return redirect()->route('dashboard', Auth::user()->id )->with('success', 'Account created successfully!');
+        $account->save();
+        return redirect()->route('dashboard', Auth::user()->id)->with('success', 'Account created successfully!');
     }
 
     /**
@@ -124,47 +124,49 @@ class AccountsController extends Controller
             return redirect()->action('AccountsController@accountsUser');
         }
         $account = Account::withTrashed()->findOrFail($id);
+        $owner = $account->owner_id;
         $movements = Movement::where('account_id', $account->id)->get();
-        $numM  = $movements->count();
+        $numM = $movements->count();
         $regex = [
             'account_type_id' => 'required|exists:account_types,id',
             'start_balance' => 'required|numeric',
             'description' => 'nullable|string',
-            'date' => 'nullable|date',
+            'date' => 'required|date',
             'code' => ['required', 'string', Rule::unique('accounts')->where(function ($query) {
                 return $query->where('owner_id', Auth::user()->id);
-            }) ],
+            })],
         ];
 
         if ($request['code'] != $account->code) {
-                $regex['code'] = ['required', 'string', Rule::unique('accounts')->where(function ($query) {
-                    return $query->where('owner_id', Auth::user()->id);
-                }),
+            $regex['code'] = ['required', 'string', Rule::unique('accounts')->where(function ($query) {
+                return $query->where('owner_id', Auth::user()->id);
+            }),
             ];
         }
 
         $accountModel = $request->validate($regex);
-        if ($accountModel['start_balance'] != $account->startbalance){
-            if ($numM == 0){
-                $account['current_balance'] = $account['start_balance'];
-            }else{
+        if ($accountModel['start_balance'] != $account->startbalance) {
+            if ($numM == 0) {
+                $accountModel['current_balance'] = $accountModel['start_balance'];
+            } else {
                 $calc = $accountModel['start_balance'] - $account->start_balance;
                 $accountModel['current_balance'] = $account->current_balance + $calc;
 
-                for ($i = 0; $i <$numM; $i++){
+                for ($i = 0; $i < $numM; $i++) {
                     $movement = $movements->get($i);
-                    $movement->start_balance +=$calc;
+                    $movement->start_balance += $calc;
                     $movement->end_balance += $calc;
                     $movement->save();
                 }
             }
         }
+        $account->date = $regex['date'];
 
         $account->fill($accountModel);
         $account->save();
 
         return redirect()
-            ->route('accounts.users')
+            ->route('accounts.users', compact('owner'))
             ->with('success', 'Account saved successfully');
     }
 
@@ -199,18 +201,12 @@ class AccountsController extends Controller
     public function accountReopen($id)
     {
         $account = Account::onlyTrashed()->findOrFail($id);
-        $user_id = Account::where('owner_id', Auth::id())->value('owner_id');
-        if ($account) {
-            if (auth()->user()->can('account_edit', $account->owner_id)) {
+        if (empty($account)) {
+            return Response::make(view('dashboard'), 404);
+        } else {
                 $account->restore();
                 return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
-            } else {
-                return Response::make(view('accounts.list'), 403);
-            }
-        } else {
-            return Response::make(view('dashboard'), 404);
         }
-
     }
 
     public function closed()

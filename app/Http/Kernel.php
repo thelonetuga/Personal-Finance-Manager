@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'canOpen' => \App\Http\Middleware\CanOpen::class,
         'canChange' => \App\Http\Middleware\CanChange::class,
         'isOwner' => \App\Http\Middleware\IsOwner::class,
+        'canMovement' => \App\Http\Middleware\canMovement::class,
     ];
 }

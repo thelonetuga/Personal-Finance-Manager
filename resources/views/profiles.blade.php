@@ -13,11 +13,17 @@
         <a class="btn  btn-primary btn-sm"   href="{{ route('associate.of') }}">Associate Of</a>
         <br>
     </form>
+    <form action="{{action('AssociatesController@associatesPost')}}" method="POST" role="form" class="inline">
+        @csrf
+        <input type="text" placeholder="Insert ID to...." name="add">
+        <button type="submit" class="btn btn-xs btn-success">Add_Associate</button>
+    </form>
     @if (count($users))
         <table class="table table-striped" >
             <thead>
                 <tr>
                     <th style="text-align: center">Profile Photo</th>
+                    <th>ID</th>
                     <th>Name</th>
                     <th style="text-align: center">Member Associate</th>
                 </tr>
@@ -32,6 +38,7 @@
                                 <img src="{{asset('storage/profiles/'.$user->profile_photo)}}" style="width:50px; height:50px; float:left; border-radius:50%; margin-left:150px; alt:'';">
                             @endif
                         </td>
+                        <td>{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
                         <td style="text-align: center">
                         @foreach($associates as $associate)
@@ -43,11 +50,11 @@
                             @if ($user->id == $associateOf->main_user_id )
                                     <span>associate-of</span>
                                     @if(Auth::user()->id != $user->id )
-                                    <form action="{{ action('AssociatesController@associateOfDelete', $user) }}" method="POST" role="form" class="inline">
+                                    <form action="{{ action('AssociatesController@associateOfDelete', $user->id) }}" method="POST" role="form" class="inline">
                                         @csrf
                                         @method('delete')
                                         <input type="hidden" name="associate_id" value="{{ $user->id }}">
-                                        <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                                        <button type="submit" class="btn btn-xs btn-danger">Desassociate</button>
                                     </form>
                                     @endif
                             @endif
@@ -55,11 +62,7 @@
                         </td>
                         <td>
                         @if(Auth::user()->id != $user->id )
-                            <form action="{{ route('associates.post' ) }}" method="POST" role="form" class="inline">
-                                @csrf
-                                <input type="hidden" name="add_user" value="{{ $user->id }}">
-                                <button type="submit" class="btn btn-xs btn-success">Add_Associate</button>
-                            </form>
+
                         @endif
                         </td>
                     </tr>

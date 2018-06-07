@@ -57,33 +57,33 @@ Route::get('/accounts/{user}/opened', 'AccountsController@opened')->name('users.
 Route::get('/accounts/{user}/closed', 'AccountsController@closed')->name('users.accounts.closed')->middleware('associateOf');
 
 //US.15
-Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete')->middleware('canDelete');
-Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close')->middleware('canDelete');
+Route::delete('/account/{account}', 'AccountsController@accountDelete')->name('account.delete')->middleware('canDelete', 'isOwner');
+Route::patch('/account/{account}/close', 'AccountsController@accountClose')->name('users.accounts.close')->middleware('isOwner');
 
 //US.16
-Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen')->middleware('auth');
+Route::patch('/account/{account}/reopen', 'AccountsController@accountReopen')->name('users.account.reopen');
 
 //US.17
 Route::get('/account', 'AccountsController@create')->name('account.create')->middleware('auth');
 Route::post('/account', 'AccountsController@store')->name('account.store')->middleware('auth');
 
 //US.18
-Route::get('/account/{account}', 'AccountsController@edit')->name('account.edit');
-Route::put('/account/{account}', 'AccountsController@update')->name('account.update');
+Route::get('/account/{account}', 'AccountsController@edit')->name('account.edit')->middleware('isOwner');
+Route::put('/account/{account}', 'AccountsController@update')->name('account.update')->middleware('isOwner');
 
 //US.20 
-Route::get('/movements/{account}', 'MovementsController@movementsAccount')->name('movements.account')->middleware('auth')->middleware('isOwner');
+Route::get('/movements/{account}', 'MovementsController@movementsAccount')->name('movements.account')->middleware('isOwner');
 
 //US.21 
-Route::get('/movements/{account}/create', 'MovementsController@movementCreate')->name('movement.create');
-Route::post('/movements/{account}/create', 'MovementsController@movementStore')->name('movement.store');
-Route::get('/movement/{movement}', 'MovementsController@edit')->name('movement.edit');
-Route::put('/movement/{movement}', 'MovementsController@update')->name('movement.update');
-Route::delete('/movement/{movement}', 'MovementsController@movementDelete')->name('movement.delete');
+Route::get('/movements/{account}/create', 'MovementsController@movementCreate')->name('movement.create')->middleware('isOwner');
+Route::post('/movements/{account}/create', 'MovementsController@movementStore')->name('movement.store')->middleware('isOwner');
+Route::get('/movement/{movement}', 'MovementsController@edit')->name('movement.edit')->middleware('canMovement');
+Route::put('/movement/{movement}', 'MovementsController@update')->name('movement.update')->middleware('canMovement');
+Route::delete('/movement/{movement}', 'MovementsController@movementDelete')->name('movement.delete')->middleware('canMovement');
 
 //US.23
-Route::get('/documents/{movement}','MovementsController@showFormDocument')->name('documents.form');
-Route::post('/documents/{movement}', 'DocumentsController@documentStore')->name('documents.movement');
+Route::get('/documents/{movement}','MovementsController@showFormDocument')->name('documents.form')->middleware('canMovement');
+Route::post('/documents/{movement}', 'DocumentsController@documentStore')->name('documents.movement')->middleware('canMovement');
 
 //US.24
 Route::delete('/document/{document}', 'DocumentsController@documentDelete')->name('document.delete')->middleware('auth');
@@ -99,5 +99,3 @@ Route::post('/me/associates', 'AssociatesController@associatesPost')->name('asso
 
 //US.30
 Route::delete('/me/associates/{user}', 'AssociatesController@associateOfDelete')->name('associates.delete');
-
-Route::get('/home', 'HomeController@index')->name('home');

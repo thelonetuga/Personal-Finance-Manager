@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentsController extends Controller
@@ -86,8 +87,10 @@ class DocumentsController extends Controller
 
             return redirect()->route('home')
                 ->with('success', 'Document deleted successfully');
-        } else
-            abort(403);
+        } else{
+            return Response::make(view('accounts.list'), 403);
+        }
+
     }
 
 }

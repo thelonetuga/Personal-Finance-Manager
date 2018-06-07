@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Associate;
+use App\User;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 
 class AssociatesController extends Controller
@@ -30,36 +32,41 @@ class AssociatesController extends Controller
     public function associatesGet()
     {
         $users = \App\User::all();
-        $associates = DB::table ('associate_members') ->where('main_user_id', '=', Auth::id())->get();
-        return view('me.associates', compact('users','associates'));
+        $associates = DB::table('associate_members')->where('main_user_id', '=', Auth::id())->get();
+        return view('me.associates', compact('users', 'associates'));
     }
 
     public function associatesOf()
     {
         $users = \App\User::all();
-        $associates_of = DB::table ('associate_members') ->where('associated_user_id', '=', Auth::id())->get();
-        return view('me.associates_of', compact('users','associates_of'));
+        $associates_of = DB::table('associate_members')->where('associated_user_id', '=', Auth::id())->get();
+        return view('me.associates_of', compact('users', 'associates_of'));
     }
 
     public function associateOfDelete()
     {
 
-        DB::table ('associate_members') ->where('associated_user_id', '=', Auth::id())->delete();
-
+        DB::table('associate_members')->where('associated_user_id', '=', Auth::id())->delete();
         return redirect()->route('profiles')->with('success', 'Associate deleted successfully');
     }
 
     public function associatesPost()
     {
         $main = Auth::user();
-
-        $associate = new Associate([
-            'main_user_id' => $main->id,
-            'associated_user_id' =>  request()->get('add_user'),
-            'created_at' => Carbon::now()
-        ]);
-        $associate->save();
-        return redirect()->back();
+        $pedido = request()->get('add');
+        if (is_null(User::findOrFail($pedido))) {
+            if ($pedido != $main->id) {
+                $associate = new Associate([
+                    'main_user_id' => $main->id,
+                    'associated_user_id' => $pedido,
+                    'created_at' => Carbon::now()
+                ]);
+                $associate->save();
+                return redirect()->route('profiles');
+            }
+            return Response::make(view('profiles'), 403);
+        }
+        return Response::make(view('profiles'), 404);
     }
 
 }
