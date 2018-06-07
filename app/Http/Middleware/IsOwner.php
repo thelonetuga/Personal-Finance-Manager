@@ -18,8 +18,8 @@ class IsOwner
      */
     public function handle($request, Closure $next)
     {
-        $account = Account::findorfail($request->route('account'));
-        $user_id = Account::where('owner_id',$account->owner_id)->value('owner_id');
+        $account = Account::withTrashed()->findorfail($request->route('account'));
+        $user_id = Account::withTrashed()->where('owner_id',$account->owner_id)->value('owner_id');
         if (Auth::id() == $user_id) {
             return $next($request);
         }

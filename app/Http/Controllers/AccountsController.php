@@ -96,19 +96,25 @@ class AccountsController extends Controller
         ]);
         //falta formatar a data mo formato Y,M,D
 
+        if (empty($data['date'])){
+            $data['date'] = date("Y-m-d");
+        }else{
+            $data['date'] = date("Y-m-d", strtotime($data['date']));
+        }
+
         $account = Account::create([
             'owner_id' => Auth::id(),
             'account_type_id' => $data['account_type_id'],
             'code' => $data['code'],
             'start_balance' => $data['start_balance'],
             'description' => $data['description'] ?? null,
-            'date' => $data['date'] ?? Carbon::now(),
+            'date' => $data['date'],
             'current_balance' => $data['start_balance'],
             'created_at' => Carbon::now(),
         ]);
 
         $account->save();
-        return redirect()->route('dashboard', Auth::user()->id)->with('success', 'Account created successfully!');
+        return redirect()->route('dashboard', Auth::user()->id);
     }
 
     /**
@@ -166,8 +172,7 @@ class AccountsController extends Controller
         $account->save();
 
         return redirect()
-            ->route('accounts.users', compact('owner'))
-            ->with('success', 'Account saved successfully');
+            ->route('accounts.users', compact('owner'));
     }
 
     /**
@@ -183,15 +188,14 @@ class AccountsController extends Controller
         $account->deleted_at == Carbon::now();
         $account->delete();
         return redirect()
-            ->route('accounts.users', auth()->user()->id)
-            ->with('success', 'Account Close successfully');
+            ->route('accounts.users', auth()->user()->id);
     }
 
     public function accountDelete($id)
     {
         $account = Account::find($id);
         $account->forceDelete();
-        return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
+        return redirect()->route('accounts.users', auth()->user()->id);
     }
 
     /**
@@ -200,13 +204,12 @@ class AccountsController extends Controller
      */
     public function accountReopen($id)
     {
-        $account = Account::onlyTrashed()->findOrFail($id);
-        if (empty($account)) {
-            return Response::make(view('dashboard'), 404);
-        } else {
-                $account->restore();
-                return redirect()->route('accounts.users', auth()->user()->id)->with('success', 'Account saved successfully');
+        $account = Account::withTrashed()->findOrFail($id);
+        if (isset($account)) {
+            $account->restore();
+            return redirect()->route('accounts.users', auth()->user()->id);
         }
+            return Response::make(view('dashboard'), 404);
     }
 
     public function closed()
