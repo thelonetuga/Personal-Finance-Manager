@@ -63,10 +63,17 @@ class Movement extends Model
         return 'Unknown';
     }
 
-    function is_selected($current, $expected, $output = 'selected')
+    public function is_selected($current, $expected, $output = 'selected')
     {
         if ($current === $expected) {
             return $output;
         }
+    }
+    public function hasAccount(){
+        return $this->belongsTo('App\Account', 'account_id');
+    }
+
+    public function hasDocument(){
+        return $this->hasOne('App\Movement', 'document_id');
     }
 }

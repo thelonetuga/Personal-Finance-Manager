@@ -11,6 +11,7 @@
             <table class="table table-striped" style="background: #cce5ff">
                 <tr>
                     <td>Account: {{$account->id}}</td>
+                    <td>Account: {{$account->current_balance}}</td>
                 </tr>
 
             </table>

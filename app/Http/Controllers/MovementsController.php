@@ -67,9 +67,21 @@ class MovementsController extends Controller
     {
         $movement = Movement::findOrFail($id);
         $movement->forceDelete();
+        $aux = $movement->hasAccount->id;
+        $account = Account::findOrFail($aux);
+        if(isset($account->movements)){
+            $account->last_movement_date= null;
+            if ($movement->movement_category_id < '12') {
+
+                $account->current_balance = $account->current_balance + $movement->value;
+            } else {
+                $account->current_balance = $account->current_balance - $movement->value;
+            }
+            $account->save();
+        }
 
         return redirect()
-            ->route('movements.account', auth()->user()->id)
+            ->route('movements.account', $movement->account_id)
             ->with('success', 'Movement deleted successfully');
     }
 
@@ -86,41 +98,58 @@ class MovementsController extends Controller
         ]);
         $movement = new Movement($data);
         $movement->account_id = $account->id;
-
-        $aux =$account->movements()->where('date','>', $data['date'])->first();
-        if (isset($aux)) {
-           $movement->start_balance = $aux['end_balance'];
-            $movement->value = $data['value'];
-            if ($movement->movement_category_id < '12') {
-                $movement->type = 'expense';
-                $movement->end_balance = $movement->start_balance - $movement->value;
-            } else {
-                $movement->type = 'revenue';
-                $movement->end_balance = $movement->start_balance + $movement->value;
-            }
-
-        }else{
-            $movement->start_balance = $account->start_balance;
-            if ($movement->movement_category_id < '12') {
-                $movement->type = 'expense';
-                $movement->end_balance = $movement->start_balance - $movement->value;
-            } else {
-                $movement->type = 'revenue';
-                $movement->end_balance = $movement->start_balance + $movement->value;
-            }
-        }
-
-
-////        $movement->start_balance = '0';
-//        $movement->end_balance = '0';
-        $movement->movement_category_id = $request->input('movement_category_id');
+        $movement->movement_category_id = $data['movement_category_id'];
         $movement->description = $data['description'];
         $movement->created_at = Carbon::now();
 
-        //$movements_atualizar = where(['date' <= $movement->date],['created_at' < $movement->created_at])->get();
+        if(!isset($account->last_movement_date) || $data['date'] >= $account->last_movement_date){
+            $movement->start_balance = $account->current_balance;
+            if ($movement->movement_category_id < '12') {
+                $movement->type = 'expense';
+                $movement->end_balance = $movement->start_balance - $movement->value;
+            } else {
+                $movement->type = 'revenue';
+                $movement->end_balance = $movement->start_balance + $movement->value;
+            }
+            $account->last_movement_date= $data['date'];
+            $movement->save();
+        }else{
+            $aux =$account->movements()->where('date','>', $data['date'])
+                                        ->orderBy('date', 'desc')
+                                        ->get();
+
+            $movement->start_balance = $aux->last()->end_balance;
+            if ($movement->movement_category_id < '12') {
+                $movement->type = 'expense';
+                $movement->end_balance = $aux->last()->end_balance - $movement->value;
+            } else {
+                $movement->type = 'revenue';
+                $movement->end_balance = $aux->last()->end_balance + $movement->value;
+            }
+            $movement->save();
+        }
+        $account->current_balance=$movement->end_balance;
+        $account->save();
+
+        $updates =$account->movements()->where('date','>', $data['date'])
+            ->orderBy('date', 'desc')
+            ->orderBy('id')
+            ->get();
+
+        foreach($updates as $mov_update){
+            $movement->start_balance = $updates->last()->end_balance;
+            if ($movement->movement_category_id < '12') {
+                $movement->type = 'expense';
+                $movement->end_balance = $mov_update->end_balance - $movement->value;
+            } else {
+                $movement->type = 'revenue';
+                $movement->end_balance = $mov_update->end_balance + $movement->value;
+            }
+            $movement->save();
+        }
 
 
-        $movement->save();
+
 
         if (request()->hasfile('document_file') && request()->file('document_file')->isValid()) {
             $document = new Document;
@@ -128,7 +157,6 @@ class MovementsController extends Controller
             $document->original_name = $request->file('document_file')->getClientOriginalName();
             $document->description = $data['documentDescription'];
             $document->created_at = Carbon::now();
-
 
             $document->save();
             $movement->document_id = $document->id;
@@ -140,6 +168,8 @@ class MovementsController extends Controller
             ->route('movements.account', $account)
             ->with('success', 'Movement added successfully');
     }
+
+
 
     public function update(UpdateMovementRequest $request, $id)
     {
