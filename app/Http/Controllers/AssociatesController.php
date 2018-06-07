@@ -54,7 +54,7 @@ class AssociatesController extends Controller
     {
         $main = Auth::user();
         $pedido = request()->get('add');
-        if (is_null(User::findOrFail($pedido))) {
+
             if ($pedido != $main->id) {
                 $associate = new Associate([
                     'main_user_id' => $main->id,
@@ -62,11 +62,10 @@ class AssociatesController extends Controller
                     'created_at' => Carbon::now()
                 ]);
                 $associate->save();
-                return redirect()->route('profiles');
+                return redirect()->back();
+            }else{
+                return Response::make(view('home'), 403);
             }
-            return Response::make(view('profiles'), 403);
-        }
-        return Response::make(view('profiles'), 404);
     }
 
 }

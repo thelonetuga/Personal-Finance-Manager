@@ -60,11 +60,6 @@
                             @endif
                         @endforeach
                         </td>
-                        <td>
-                        @if(Auth::user()->id != $user->id )
-
-                        @endif
-                        </td>
                     </tr>
                 @endforeach
             </tbody>
