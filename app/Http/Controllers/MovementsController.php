@@ -9,6 +9,7 @@ use App\Movement;
 use App\Document;
 use App\User;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -43,7 +44,7 @@ class MovementsController extends Controller
             return view('movements.list', compact('movements', 'account', 'pagetitle'));
         } else {
             return Response::make(view('home'), 403);
-       }
+        }
 
     }
 
@@ -69,17 +70,15 @@ class MovementsController extends Controller
         $movement->forceDelete();
         $aux = $movement->hasAccount->id;
         $account = Account::findOrFail($aux);
-        if(isset($account->movements)){
-            $account->last_movement_date= null;
-            if ($movement->movement_category_id < '12') {
-
-                $account->current_balance = $account->current_balance + $movement->value;
-            } else {
-                $account->current_balance = $account->current_balance - $movement->value;
-            }
-            $account->save();
+        if (isset($account->movements)) {
+            $account->last_movement_date = null;
         }
-
+        if ($movement->movement_category_id < '12') {
+            $account->current_balance = $account->current_balance + $movement->value;
+        } else {
+            $account->current_balance = $account->current_balance - $movement->value;
+        }
+        $account->save();
         return redirect()
             ->route('movements.account', $movement->account_id)
             ->with('success', 'Movement deleted successfully');
@@ -101,8 +100,12 @@ class MovementsController extends Controller
         $movement->movement_category_id = $data['movement_category_id'];
         $movement->description = $data['description'];
         $movement->created_at = Carbon::now();
+        $last = $account->last_movement_date;
+        $aux = $account->movements()->where('date', '>', $data['date'])
+            ->orderBy('date', 'desc')
+            ->get();
 
-        if(!isset($account->last_movement_date) || $data['date'] >= $account->last_movement_date){
+        if (is_null($last) || $aux->isEmpty() || $data['date'] = $aux->first()->date ) {
             $movement->start_balance = $account->current_balance;
             if ($movement->movement_category_id < '12') {
                 $movement->type = 'expense';
@@ -111,13 +114,10 @@ class MovementsController extends Controller
                 $movement->type = 'revenue';
                 $movement->end_balance = $movement->start_balance + $movement->value;
             }
-            $account->last_movement_date= $data['date'];
+            $account->last_movement_date = $data['date'];
             $movement->save();
-        }else{
-            $aux =$account->movements()->where('date','>', $data['date'])
-                                        ->orderBy('date', 'desc')
-                                        ->get();
-
+        } else {
+            dd($aux);
             $movement->start_balance = $aux->last()->end_balance;
             if ($movement->movement_category_id < '12') {
                 $movement->type = 'expense';
@@ -128,27 +128,25 @@ class MovementsController extends Controller
             }
             $movement->save();
         }
-        $account->current_balance=$movement->end_balance;
+        $account->current_balance = $movement->end_balance;
         $account->save();
-
+        /*
         $updates =$account->movements()->where('date','>', $data['date'])
             ->orderBy('date', 'desc')
-            ->orderBy('id')
+            ->orderBy('id','asc')
             ->get();
 
-        foreach($updates as $mov_update){
+       for($i = 0; $i <  $updates->count(); $i++){
             $movement->start_balance = $updates->last()->end_balance;
             if ($movement->movement_category_id < '12') {
                 $movement->type = 'expense';
-                $movement->end_balance = $mov_update->end_balance - $movement->value;
+                $movement->end_balance = $updates[$i]->end_balance - $movement->value;
             } else {
                 $movement->type = 'revenue';
-                $movement->end_balance = $mov_update->end_balance + $movement->value;
+                $movement->end_balance = $updates[$i]->end_balance + $movement->value;
             }
             $movement->save();
-        }
-
-
+        }*/
 
 
         if (request()->hasfile('document_file') && request()->file('document_file')->isValid()) {
@@ -168,7 +166,6 @@ class MovementsController extends Controller
             ->route('movements.account', $account)
             ->with('success', 'Movement added successfully');
     }
-
 
 
     public function update(UpdateMovementRequest $request, $id)
