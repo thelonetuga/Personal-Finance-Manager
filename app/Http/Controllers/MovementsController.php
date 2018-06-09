@@ -38,22 +38,28 @@ class MovementsController extends Controller
         $id = request()->route('account');
         $account = Account::findOrFail($id);
         $user = User::findOrFail($account->owner_id);
-        if (Auth::id() == $account->owner_id) {
+        if ($user->associate->pluck('id')->contains(Auth::id())){
+            $movements = Movement::where('account_id', '=', $id)->orderby('date', 'desc')->get();
+            $pagetitle = "List of Movements";
+            return view('movements.listAssociateOf', compact('movements', 'account', 'pagetitle'));
+        }else if (Auth::id() == $account->owner_id) {
             $movements = Movement::where('account_id', '=', $id)->orderby('date', 'desc')->get();
             $pagetitle = "List of Movements";
             return view('movements.list', compact('movements', 'account', 'pagetitle'));
         } else {
             return Response::make(view('home'), 403);
         }
-
     }
 
-    public function movementCreate()
+    public function movementCreate($id)
     {
-        $account = Account::where('owner_id', '=', auth()->user()->id)->value('id');
-        $movement = new Movement();
-        $pagetitle = "Create Movement";
-        return view('movements.add', compact('movement', 'account', 'pagetitle'));
+        $account = Account::findOrFail($id);
+        if ($account->owner_id == Auth::id()){
+            $movement = new Movement();
+            $pagetitle = "Create Movement";
+            return view('movements.add', compact('movement', 'account', 'pagetitle'));
+        }
+        return Response::make(view('home'), 403);
     }
 
     public function edit($id)

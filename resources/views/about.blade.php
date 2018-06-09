@@ -1,6 +1,5 @@
 @extends('layouts.navBar')
 
-
 @section('title', 'Personal Finances Assistant')
 
 @section('content')

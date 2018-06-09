@@ -25,6 +25,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::define('canDo', function($auth, $user_id){
+            return $auth->id != $user_id;
+        });
+
         Gate::define('account_edit', function($auth, $user_id){
            return $auth->id == $user_id;
         });

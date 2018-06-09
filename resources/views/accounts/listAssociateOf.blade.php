@@ -6,9 +6,6 @@
 @endif
 @section('content')
     <div class="container">
-        <a class="btn btn-xs btn-primary" href="{{route('account.create')}}">Create Account</a>
-        <br>
-        <br>
         @if (count($accounts))
             <table class="table table-striped" style="background: #cce5ff">
                 <thead>
@@ -31,32 +28,7 @@
                         <td>{{ $account->description }}</td>
                         <td>{{ $account->typeToStr() }}</td>
                         <td>
-                            <a class="btn btn-xs btn-primary" href="{{route('account.edit',$account->id)}}">Edit</a>
                             <a class="btn btn-xs btn-success" href="{{route('movements.account', $account->id)}}">Movements</a>
-                            <form action="{{ action('AccountsController@accountDelete', $account->id) }}" method="POST"
-                                  role="form" class="inline">
-                                @csrf
-                                @method('delete')
-                                <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
-                                <button type="submit" class="btn btn-xs btn-danger">Delete</button>
-                            </form>
-                            @if($account->trashed())
-                                <form action="{{ action('AccountsController@accountReopen', $account->id) }}"
-                                      method="POST" role="form" class="inline">
-                                    @csrf
-                                    @method('patch')
-                                    <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
-                                    <button type="submit" class="btn btn-xs btn-warning">Reopen</button>
-                                </form>
-                            @else
-                                <form action="{{ action('AccountsController@accountClose', $account->id) }}"
-                                      method="POST" role="form" class="inline">
-                                    @csrf
-                                    @method('patch')
-                                    <input type="hidden" name="account_id" value="{{ intval($account->account_id) }}">
-                                    <button type="submit" class="btn btn-xs btn-warning">Close</button>
-                                </form>
-                            @endif
                         </td>
                     </tr>
                 @endforeach

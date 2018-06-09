@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container">
-        <a class="btn btn-xs btn-success" href="{{route('movement.create', $account)}}">Add new movement</a>
+        <a class="btn btn-xs btn-success" href="{{route('movement.create', $account->id)}}">Add new movement</a>
         <br>
         <br>
         @if (count($movements))
@@ -57,6 +57,10 @@
                                 <a class="btn btn-xs btn-info"
                                    href="{{ action('DocumentsController@documentGet', $movement->document_id) }}"
                                    role="button">Download Document</a>
+                                <br>
+                                <a class="btn btn-xs btn-success"
+                                   href="{{ action('DocumentsController@documentView', $movement->document_id) }}"
+                                   role="button">View Document</a>
                                 <br>
                                 <form action="{{ action('DocumentsController@documentDelete', $movement->document_id) }}"
                                       method="POST" role="form" class="inline">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Document;
 use App\Movement;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,38 +31,66 @@ class DocumentsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
-    public function documentStore(Request $request, $id)
+    public function documentStore(Request $request, $idMovement)
     {
-        $movement = Movement::findOrFail($id);
+        $movement = Movement::findOrFail($idMovement);
+        $account = Account::findOrFail($movement->account_id);
 
-        $data =$request-> validate([
-            'document_file'=> 'file|mimes:pdf,jpeg, PNG',
-            'documentDescription'=> 'string|nullable'
-        ]);
-        if (request()->hasfile('document_file') && request()->file('document_file')->isValid()) {
-            $document= new Document;
-            $document->type = $request->file('document_file')->getClientOriginalExtension();
-            $document->original_name = $request->file('document_file')->getClientOriginalName();
-            $document->description = $data['documentDescription'];
-            $document->created_at = Carbon::now();
+        if ($account->owner_id == Auth::id()) {
 
+            if ($request->has('document_file') || $request->has('document_description')) {
+                $data = $request->validate([
+                    'document_file' => 'required|mimes:png,jpeg,pdf',
+                    'document_description' => 'nullable|string',
+                ]);
 
-            $document->save();
-            $movement->document_id = $document->id;
-            $movement->save();
-            Storage::putFileAs('documents/' . $movement->account_id, $request->file('document_file'), $movement->id . '.' . $document['type']);
+                $document = Document::create([
+                    'type' => $data['document_file']->getClientOriginalExtension(),
+                    'original_name' => $data['document_file']->getClientOriginalName(),
+                    'description' => $data['document_description'] ?? null,
+                    'created_at' => Carbon::now(),
+                ]);
+
+                if (is_null($movement->document_id)) {
+                    $data['document_file']->storeAs('documents/' . $movement->account_id, $movement->id . "." . $data['document_file']->getClientOriginalExtension());
+                    $document->save();
+                    $movement->document_id = $document->id;
+                    $movement->save();
+                } else {
+                    $documentDeleted = Document::findOrFail($movement->document_id);
+                    $movement->document_id = null;
+                    $movement->update();
+                    $documentDeleted->forceDelete();
+                    Storage::disk('local')->delete('documents/' . $movement->account_id . "/" . $movement->id . "." . $documentDeleted->type);
+                    $data['document_file']->storeAs('documents/' . $movement->account_id, $movement->id . "." . $data['document_file']->getClientOriginalExtension());
+                    $document->save();
+                    $movement->document_id = $document->id;
+                    $movement->save();
+                }
+                return redirect()->route('movements.account', $movement->account_id);
+            }
+        } else {
+            return Response::make(view('accounts.list'), 403);
         }
-        return redirect()->route('movements.account', $movement->account_id);
     }
 
-    public function documentGet($id)
-    {
-        $document =  Document::findOrFail($id);
-        $movement = Movement::where('document_id', $document->id)->first();
 
-        $path = storage_path('app/documents/'.$movement->account_id.'/'.$movement->id. '.' .$document->type);
-        return response()->download($path,$document->original_name);
+    public function documentGet(Document $document)
+    {
+        $movement = Movement::where('document_id', $document->id)->first();
+        $account = Account::findOrFail($movement->account_id);
+        $user = User::findOrFail($account->owner_id);
+
+        if (Auth::id() == $account->owner_id || $user->associate->pluck('id')->contains(Auth::id())) {
+            if ($movement->document_id != null) {
+                $path = 'documents/' . $account->id . '/' . $movement->id . '.' . $document->type;
+                return Storage::download($path, $document->original_name);
+            } else {
+                return redirect()->route('movements.account', $movement->account_id);
+            }
+        } else {
+            return Response::make(view('accounts.list'), 403);
+        }
     }
 
     public function documentDelete($id)
@@ -70,18 +99,36 @@ class DocumentsController extends Controller
         $movement = $document->document;
         $accountId = $movement->account_id;
         $account = Account::findOrFail($accountId);
-        if(Auth::user()->id == $account->owner_id){
-            if ($document->id != null){
-                $movement->document_id =null;
-                $movement->update();
-                $document->delete();
-                Storage::disk('local')->delete('documents/' . $movement->account_id . '/' . $movement->id . '.' . $document->type);
-            }
-            return Response::make(view('homeaccounts.list'), 404);
-        } else{
+
+        if (Auth::id() == $account->owner_id) {
+            $movement->document_id = null;
+            $movement->update();
+            $document->forceDelete();
+            Storage::disk('local')->delete('documents/' . $accountId . "/" . $movement->id . "." . $document->type);
+            return redirect()->route('movements.account', $movement->account_id);
+        } else {
             return Response::make(view('accounts.list'), 403);
         }
-
     }
+
+    public function documentView($idDocument)
+    {
+        $document = Document::findOrFail($idDocument);
+        $account = Account::findOrFail($document->document->account_id);
+        $movement = $document->document;
+        $user = User::findOrFail($account->owner_id);
+
+        if (Auth::id() == $account->owner_id || $user->associate->pluck('id')->contains(Auth::id())) {
+            if ($movement->document_id != null) {
+                $path = storage_path('app/documents/' . $account->id . '/' . $movement->id . '.' . $document->type);
+                return response()->file($path);
+            } else {
+                return redirect()->route('movements.account', $movement->account_id);
+            }
+        } else {
+            return Response::make(view('accounts.list'), 403);
+        }
+    }
+
 
 }

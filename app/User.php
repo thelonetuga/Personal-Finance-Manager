@@ -71,11 +71,11 @@ class User extends Authenticatable
     }
 
     public function associateOf(){
-        return  $this->belongsToMany('App\User', 'associated_members', 'associated_user_id', 'main_user_id');
+        return  $this->belongsToMany('App\User', 'associate_members', 'associated_user_id', 'main_user_id');
     }
 
     public function associate(){
-        return  $this->belongsToMany('App\User', 'associated_members', 'associated_user_id', 'main_user_id');
+        return  $this->belongsToMany('App\User', 'associate_members', 'main_user_id', 'associated_user_id');
     }
 
 

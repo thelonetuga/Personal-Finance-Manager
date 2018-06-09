@@ -50,25 +50,25 @@
                         <td style="text-align: center">
                                 @if ($isAssociate)
                                     <span>associate</span>
+                                @if(Auth::user()->id != $user->id )
+                                    <form action="{{ action('AssociatesController@associateOfDelete', $user->id) }}"
+                                          method="POST" role="form" class="inline">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="hidden" name="associate_of_id" value="{{ $user->id }}">
+                                        <button type="submit" class="btn btn-xs btn-danger">Desassociate</button>
+                                    </form>
+                                @endif
                                 @else
                                 <form action="{{action('AssociatesController@associatesPost')}}" method="POST" role="form" class="inline">
                                     @csrf
-                                    <input type="hidden" name="associate_id" value="{{ $user->id }}">
+                                    <input type="hidden" name="associated_user" value="{{ $user->id }}">
                                     <button type="submit" class="btn btn-xs btn-success">Add_Associate</button>
                                 </form>
                                 @endif
                             @foreach($associates_of as $associateOf)
                                 @if ($user->id == $associateOf->main_user_id )
                                     <span>associate-of</span>
-                                    @if(Auth::user()->id != $user->id )
-                                        <form action="{{ action('AssociatesController@associateOfDelete', $user->id) }}"
-                                              method="POST" role="form" class="inline">
-                                            @csrf
-                                            @method('delete')
-                                            <input type="hidden" name="associate_of_id" value="{{ $user->id }}">
-                                            <button type="submit" class="btn btn-xs btn-danger">Desassociate-Of</button>
-                                        </form>
-                                    @endif
                                 @endif
                             @endforeach
                         </td>

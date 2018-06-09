@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="container">
-        <a class="btn btn-xs btn-success" href="{{route('movement.create', $account)}}">Add new movement</a>
         <br>
         <br>
         @if (count($movements))
@@ -13,7 +12,6 @@
                     <td>Account: {{$account->id}}</td>
                     <td>Account: {{$account->current_balance}}</td>
                 </tr>
-
             </table>
             <h3>Account movements:</h3>
             <table class="table table-striped" style="background: #cce5ff">
@@ -44,15 +42,6 @@
                         <td>{{ $movement->end_balance }}</td>
 
                         <td>
-                            <a class="btn btn-xs btn-primary" href="{{route('movement.edit',$movement)}}">Edit</a>
-
-                            <form action="{{ action('MovementsController@movementDelete', $movement->id) }}"
-                                  method="POST" role="form" class="inline">
-                                @csrf
-                                @method('delete')
-                                <input type="hidden" name="account_id" value="{{ intval($movement->movement_id) }}">
-                                <button type="submit" class="btn btn-xs btn-danger">Delete</button>
-                            </form>
                             @isset($movement->document_id)
                                 <a class="btn btn-xs btn-info"
                                    href="{{ action('DocumentsController@documentGet', $movement->document_id) }}"
@@ -62,15 +51,6 @@
                                    href="{{ action('DocumentsController@documentView', $movement->document_id) }}"
                                    role="button">View Document</a>
                                 <br>
-                                <form action="{{ action('DocumentsController@documentDelete', $movement->document_id) }}"
-                                      method="POST" role="form" class="inline">
-                                    @csrf
-                                    @method('delete')
-                                    <button type="submit" class="btn btn-xs btn-danger">Delete Document</button>
-                                </form>
-                            @else
-                                <a class="btn btn-xs btn-warning" href="{{route('documents.form',$movement->id)}}"
-                                   role="button">Upload Document</a>
                             @endisset
                         </td>
                     </tr>

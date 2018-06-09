@@ -28,7 +28,7 @@
                                     {{ $user->email }}
                                 </td>
                                 <td>
-                                    <a class="btn btn-link"  href="{{ route('accounts.users',$associate->main_user_id) }}">Accounts</a>
+                                    <a class="btn btn-link"  href="{{ route('accounts.users',$user->id) }}">Accounts</a>
                                 </td>
                             </tr>
                         @endif

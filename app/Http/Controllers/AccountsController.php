@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Account;
 use App\Movement;
+use App\User;
 use Carbon\Carbon;
 use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,17 +38,16 @@ class AccountsController extends Controller
      */
     public function accountsUser($id)
     {
-        if (Auth::user()->id == $id) {
-            $user_id = Account::where('owner_id', '=', auth()->user()->id)->value('owner_id');
-            $accounts = Account::withTrashed()->where('owner_id', '=', $id)->get();
-            $pagetitle = "List of Accounts";
-            return view('accounts.list', compact('accounts', 'user_id', 'pagetitle'));
-        } else {
-            return Response::make(view('home'), 403);
+        $user = User::findOrFail($id);
+        if ($user->id == Auth::id()) {
+            $accounts = Account::withTrashed()->where('owner_id', '=', $user->id)->get();
+            return view('accounts.list', compact('accounts', 'pagetitle'));
+        } elseif ($user->associate()->pluck('main_user_id')->contains($user->id)) {
+            $accounts = Account::all()->where('owner_id', '=', $user->id);
+            return view('accounts.listAssociateOf', compact('accounts', 'pagetitle'));
         }
-
+        return Response::make(view('home'), 403);
     }
-
     /**
      * Show the form for creating a new resource.
      *

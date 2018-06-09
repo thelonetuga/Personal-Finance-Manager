@@ -52,7 +52,7 @@ Route::get('/me/associates', 'AssociatesController@associatesGet')->name('associ
 Route::get('/me/associate-of', 'AssociatesController@associatesOf')->name('associate.of');
 
 //US.14
-Route::get('/accounts/{user}', 'AccountsController@accountsUser')->name('accounts.users')->middleware('associateOf');
+Route::get('/accounts/{user}', 'AccountsController@accountsUser')->name('accounts.users')->middleware('auth');
 Route::get('/accounts/{user}/opened', 'AccountsController@opened')->name('users.accounts.opened')->middleware('associateOf');
 Route::get('/accounts/{user}/closed', 'AccountsController@closed')->name('users.accounts.closed')->middleware('associateOf');
 
@@ -90,6 +90,7 @@ Route::delete('/document/{document}', 'DocumentsController@documentDelete')->nam
 
 //US.25
 Route::get('/document/{document}', 'DocumentsController@documentGet')->name('document.get');
+Route::get('/document/show/{document}', 'DocumentsController@documentView')->name('document.view');
 
 //US.26
 Route::get('/dashboard/{user}', 'UserController@dashboard')->name('dashboard');
